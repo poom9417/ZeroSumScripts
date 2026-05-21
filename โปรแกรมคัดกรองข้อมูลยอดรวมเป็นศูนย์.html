@@ -1,0 +1,1206 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคัดกรองข้อมูลยอดรวมเป็นศูนย์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+        .table-container { max-height: 50vh; overflow-y: auto; }
+        th { position: sticky; top: 0; background-color: #f3f4f6; z-index: 10; }
+        /* Loader Animation */
+        .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #3b82f6; width: 20px; height: 20px; -webkit-animation: spin 1s linear infinite; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        @-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold">โปรแกรมจับคู่และคัดกรองข้อมูล</h1>
+            <p class="mt-2 text-blue-100">รวมยอดตาม Reference Key 2 + Text และดึงเฉพาะยอดรวมที่เท่ากับ 0</p>
+        </div>
+
+        <div class="p-6 md:p-8">
+            
+            <!-- ส่วนกล่องข้อความสำหรับแสดง/แก้ไข Template F-30 (เพื่อความสวยงามจึงใส่ในระบบพับได้) -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <button onclick="toggleTemplate()" class="w-full px-6 py-4 text-left font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center rounded-lg transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        ⚙️ ตรวจสอบ Template F-30 ที่ใช้ในระบบ
+                    </span>
+                    <svg id="templateIcon" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="templateContainer" class="hidden p-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-600 mb-4">คุณสามารถตรวจสอบโครงสร้าง F-30 ได้จากสองกล่องด้านล่างนี้ โดยระบบจะดึงโครงสร้างที่ถูกต้องไปทำงานโดยอัตโนมัติ</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-blue-700 mb-2">📄 Template F-30 (สำหรับโหมด Text)</label>
+                            <textarea id="f30TemplateTextInput" oninput="saveTemplate()" class="w-full h-64 p-4 border border-blue-200 rounded-lg font-mono text-xs bg-blue-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none whitespace-pre overflow-x-auto" spellcheck="false"></textarea>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold text-green-700 mb-2">📅 Template F-30 (สำหรับโหมด Date)</label>
+                            <textarea id="f30TemplateDateInput" oninput="saveTemplate()" class="w-full h-64 p-4 border border-green-200 rounded-lg font-mono text-xs bg-green-50 focus:bg-white focus:ring-2 focus:ring-green-500 outline-none whitespace-pre overflow-x-auto" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ส่วนเครื่องมือสร้าง Script ด่วน M -->
+            <div class="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+                    <h2 class="text-lg font-semibold text-yellow-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        สร้าง Script ด่วนจากไฟล์ (โหมดไม่อิงยอดรวม โหลดเป็น ZIP)
+                    </h2>
+                    
+                    <button onclick="downloadSampleFiles()" class="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-blue-200 shadow-sm transition hover:bg-blue-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        โหลดไฟล์ตัวอย่าง
+                    </button>
+                </div>
+                
+                <p class="text-sm text-yellow-700 mb-5">เลือกไฟล์ CSV ที่มีหัวคอลัมน์ตรงตามเงื่อนไขเพื่อสร้าง Script ทันที (นำเมาส์ชี้ที่ปุ่ม 1 วินาทีเพื่อดูเงื่อนไข)</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div class="relative group flex-1 flex">
+                        <input type="file" id="fb09AssignmentManualInput" accept=".csv" class="hidden" onchange="handleManualFB09(this, 'assignment')">
+                        <button onclick="document.getElementById('fb09AssignmentManualInput').click()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            FB09 Assignment M
+                        </button>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
+                            <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ FB09</p>
+                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <ul class="list-disc pl-4 mt-1 text-gray-300">
+                                <li>Document Number</li>
+                                <li>Fiscal Year</li>
+                                <li>Line item</li>
+                                <li>Text <span class="text-gray-500">(ลงช่อง ZUONR)</span></li>
+                            </ul>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative group flex-1 flex">
+                        <input type="file" id="fb09TextManualInput" accept=".csv" class="hidden" onchange="handleManualFB09(this, 'text')">
+                        <button onclick="document.getElementById('fb09TextManualInput').click()" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            FB09 Text M
+                        </button>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
+                            <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ FB09</p>
+                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <ul class="list-disc pl-4 mt-1 text-gray-300">
+                                <li>Document Number</li>
+                                <li>Fiscal Year</li>
+                                <li>Line item</li>
+                                <li>Text <span class="text-gray-500">(ลงช่อง SGTXT)</span></li>
+                            </ul>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative group flex-1 flex">
+                        <input type="file" id="f30ManualInput" accept=".csv" class="hidden" onchange="handleManualF30(this)">
+                        <button onclick="document.getElementById('f30ManualInput').click()" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            F_30 M
+                        </button>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
+                            <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ F_30</p>
+                            <p class="mt-1 text-blue-300">ดึงข้อมูลจาก "Template แบบ Text"</p>
+                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <ul class="list-disc pl-4 mt-1 text-gray-300">
+                                <li>Date <span class="text-gray-500">(เช่น 31.12.2024)</span></li>
+                                <li>customer</li>
+                                <li>text <span class="text-gray-500">(พิมพ์ติด =0 มาเลย)</span></li>
+                            </ul>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ส่วนระบบคัดกรองหลัก -->
+            <div class="mb-8 border-2 border-dashed border-gray-300 rounded-lg p-6 hover:bg-gray-50 transition" id="drop-zone">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">ระบบคัดกรองหลัก (ยอดรวมเป็นศูนย์)</h2>
+                
+                <div class="mb-6 flex flex-col md:flex-row justify-center items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                    <span class="font-medium text-gray-700">เลือกเงื่อนไขการจับคู่ Key:</span>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="mainLogicSelection" value="text" class="form-radio text-blue-600 w-5 h-5" checked>
+                        <span class="ml-2 text-gray-700">แบบ <b>Text</b> <span class="text-sm text-gray-500">(Cus + Ref1 + Ref2 + Text)</span></span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" name="mainLogicSelection" value="date" class="form-radio text-green-600 w-5 h-5">
+                        <span class="ml-2 text-gray-700">แบบ <b>Date</b> <span class="text-sm text-gray-500">(Cus + Ref1 + Ref2 + Doc.Date)</span></span>
+                    </label>
+                </div>
+
+                <div class="text-center">
+                    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+                    <label for="csvFileInput" class="cursor-pointer inline-flex flex-col items-center justify-center">
+                        <svg class="w-12 h-12 text-blue-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <span class="text-base font-medium text-gray-700">คลิกเพื่อเลือกไฟล์ CSV หรือลากไฟล์มาวางที่นี่</span>
+                        <span class="text-sm text-gray-500 mt-1">ไฟล์ต้องมีคอลัมน์ตรงตามเงื่อนไขที่เลือกด้านบน</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="hidden p-4 mb-6 rounded-lg font-medium text-center"></div>
+
+            <div id="resultSection" class="hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <h2 class="text-xl font-semibold text-gray-800">ผลลัพธ์ที่ตรงตามเงื่อนไข <span id="recordCount" class="text-blue-600 text-base"></span></h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                </svg>
+                            </div>
+                            <input type="text" id="searchInput" oninput="filterTable()" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="ค้นหาจาก Customer / Text / Date...">
+                        </div>
+
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="exportToExcel()" class="flex-1 sm:flex-none justify-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                โหลด Excel
+                            </button>
+                            <button onclick="exportToTXT()" class="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                โหลด TXT (ZIP)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg shadow-sm overflow-x-auto table-container">
+                    <table id="resultTable" class="w-full text-sm text-left text-gray-600 whitespace-nowrap">
+                        <thead id="tableHead" class="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allResultData = [];
+        let exportData = [];
+        let headerRow = [];
+        let currentUsedLogic = "text"; 
+
+        const fileInput = document.getElementById('csvFileInput');
+        const dropZone = document.getElementById('drop-zone');
+        const statusMessage = document.getElementById('statusMessage');
+        const resultSection = document.getElementById('resultSection');
+        const tableHead = document.getElementById('tableHead');
+        const tableBody = document.getElementById('tableBody');
+        const recordCount = document.getElementById('recordCount');
+        const searchInput = document.getElementById('searchInput');
+        
+        const f30TemplateTextInput = document.getElementById('f30TemplateTextInput');
+        const f30TemplateDateInput = document.getElementById('f30TemplateDateInput');
+
+        // =========================================================
+        // 1. วาง Template สำหรับ "โหมด Text" ตรงนี้
+        const defaultF30Text_ForTextMode = `SAPMF05A   0122X
+                BKPF-BLDAT                         (today,"dd.mm.yyyy")
+                BKPF-BLART                         AB
+                BKPF-BUKRS                         1000
+                BKPF-BUDAT                         (today,"dd.mm.yyyy")
+                BKPF-MONAT                         8
+                BKPF-WAERS                         THB
+                FS006-DOCID                        *
+                BDC_OKCODE                         =SL
+SAPMF05A   0710X
+                RF05A-AGBUK                        1000
+                RF05A-AGKON                        (Customer)
+                RF05A-AGKOA                        D
+                RF05A-XNOPS                        X
+                RF05A-XPOS1(01)
+                RF05A-XPOS1(04)                    X
+                BDC_OKCODE                         /00
+SAPMF05A   0731X
+                RF05A-SEL01(01)                    (Text=0O/I(U))
+                BDC_OKCODE                         =PA
+SAPDF05X   3100X
+                RF05A-ABPOS                        1
+                BDC_OKCODE                         =P++
+SAPDF05X   3100X
+                RF05A-ABPOS                        309
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        312
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        315
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        312
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        309
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        300
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        297
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        294
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        285
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        282
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        279
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        276
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        270
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        267
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        264
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        261
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        258
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        249
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        246
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        243
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        240
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        237
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        234
+                BDC_OKCODE                         =BS
+SAPMF05A   700X
+                BDC_OKCODE                         =BU
+TCDEF-30
+ENDTCDE`;
+
+        // =========================================================
+        // 2. วาง Template สำหรับ "โหมด Date" ตรงนี้
+        const defaultF30Text_ForDateMode = `SAPMF05A   0122X
+                BKPF-BLDAT                         (today,"dd.mm.yyyy")
+                BKPF-BLART                         AB
+                BKPF-BUKRS                         1000
+                BKPF-BUDAT                         (today,"dd.mm.yyyy")
+                BKPF-MONAT                         8
+                BKPF-WAERS                         THB
+                FS006-DOCID                        *
+                BDC_OKCODE                         =SL
+SAPMF05A   0710X
+                RF05A-AGBUK                        1000
+                RF05A-AGKON                        (Customer)
+                RF05A-AGKOA                        D
+                RF05A-XNOPS                        X
+                RF05A-XPOS1(01)
+                RF05A-XPOS1(04)                    X
+                BDC_OKCODE                         /00
+SAPMF05A   0731X
+                RF05A-SEL01(01)                    DATE=0
+                BDC_OKCODE                         =PA
+SAPDF05X   3100X
+                RF05A-ABPOS                        1
+                BDC_OKCODE                         =P++
+SAPDF05X   3100X
+                RF05A-ABPOS                        309
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        312
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        315
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        312
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        309
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        300
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        297
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        294
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        285
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        282
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        279
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        276
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        270
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        267
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        264
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        261
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        258
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        249
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        246
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        243
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        240
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        237
+                BDC_OKCODE                         /00
+SAPDF05X   3100X
+                RF05A-ABPOS                        234
+                BDC_OKCODE                         =BS
+SAPMF05A   700X
+                BDC_OKCODE                         =BU
+TCDEF-30
+ENDTCDE`;
+        // =========================================================
+
+        window.onload = function() {
+            if (f30TemplateTextInput) f30TemplateTextInput.value = defaultF30Text_ForTextMode;
+            if (f30TemplateDateInput) f30TemplateDateInput.value = defaultF30Text_ForDateMode;
+        };
+
+        function toggleTemplate() {
+            const container = document.getElementById('templateContainer');
+            const icon = document.getElementById('templateIcon');
+            if (container) container.classList.toggle('hidden');
+            if (icon) icon.classList.toggle('rotate-180');
+        }
+
+        function saveTemplate() {
+            // ไม่ต้องจำค่าเก่าอีกต่อไป เพราะให้ดึงโค้ดที่ฝังมาใช้ 100%
+        }
+
+        function formatToMMDDYYYY(dateStr) {
+            if (!dateStr) return "";
+            const match = dateStr.match(/^(\d{1,2})[\.\-\/](\d{1,2})[\.\-\/](\d{4})$/);
+            if (match) {
+                const dd = match[1].padStart(2, '0');
+                const mm = match[2].padStart(2, '0');
+                const yyyy = match[3];
+                return `${mm}/${dd}/${yyyy}`;
+            }
+            const d = new Date(dateStr);
+            if (!isNaN(d.getTime())) {
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${mm}/${dd}/${yyyy}`;
+            }
+            return dateStr;
+        }
+
+        function downloadSampleFiles() {
+            const zip = new JSZip();
+
+            const fb09Csv = "Document Number,Fiscal Year,Line item,Text\n6100000000,2026,1,SampleText\n6100000001,2026,2,SampleText2";
+            zip.file("ตัวอย่าง_FB09.csv", "\uFEFF" + fb09Csv);
+
+            const f30Csv = "Date,customer,text\n31.12.2026,C0123456,SampleText=0O\n01.01.2027,C0123457,SampleText2=0I";
+            zip.file("ตัวอย่าง_F_30.csv", "\uFEFF" + f30Csv);
+
+            const readme = `เงื่อนไขไฟล์สำหรับโหมดสร้าง Script ด่วน (Manual)
+------------------------------------------------------
+ข้อควรระวัง: 
+- ไฟล์ต้องเป็นนามสกุล .csv เสมอ
+- หัวคอลัมน์เป็นภาษาอังกฤษ พิมพ์เล็กหรือใหญ่ก็ได้ แต่ต้องสะกดให้ตรงตามนี้
+
+------------------------------------------------------
+1. ไฟล์ FB09 (ใช้ได้ทั้งปุ่ม FB09 Assignment M และ FB09 Text M)
+ต้องมีหัวคอลัมน์ 4 คอลัมน์ ดังนี้:
+  > Document Number : เลขที่เอกสาร (เช่น 6100000000)
+  > Fiscal Year     : ปี (เช่น 2026)
+  > Line item       : บรรทัดรายการ (เช่น 1, 2, 3...)
+  > Text            : ข้อความที่ต้องการใส่ 
+
+------------------------------------------------------
+2. ไฟล์ F-30 (ใช้ได้กับปุ่ม F_30 M)
+ต้องมีหัวคอลัมน์ 3 คอลัมน์ ดังนี้:
+  > Date            : วันที่ (เช่น 31.12.2026) 
+  > customer        : รหัสลูกค้า (เช่น C0123456)
+  > text            : ข้อความที่ต้องการ (พิมพ์ติด =0 มาเลย)`;
+
+            zip.file("เงื่อนไขการใช้งาน.txt", readme);
+
+            zip.generateAsync({type: "blob"}).then(function(content) {
+                const url = URL.createObjectURL(content);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'Sample_Manual_Scripts.zip');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // --- โหมดสร้าง FB09 M ---
+        async function handleManualFB09(inputElement, type) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function(results) {
+                    const data = results.data;
+                    if (data.length === 0) {
+                        alert("ไฟล์ไม่มีข้อมูล");
+                        inputElement.value = '';
+                        return;
+                    }
+                    
+                    const firstRowKeys = Object.keys(data[0]).map(k => k.trim().toLowerCase());
+                    const hasDocNum = firstRowKeys.includes("document number");
+                    const hasFiscYear = firstRowKeys.includes("fiscal year");
+                    const hasLineItem = firstRowKeys.includes("line item");
+                    const hasText = firstRowKeys.includes("text");
+
+                    if (!hasDocNum || !hasFiscYear || !hasLineItem || !hasText) {
+                        alert("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Line item, Text");
+                        inputElement.value = '';
+                        return;
+                    }
+
+                    showMessage(`กำลังเตรียมบีบอัดไฟล์ ZIP สำหรับ FB09 ${type} M...`, "info");
+                    
+                    setTimeout(async () => {
+                        try {
+                            const todayDate = new Date();
+                            const dd = String(todayDate.getDate()).padStart(2, '0');
+                            const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                            const fileDateStr = `${dd}.${mm}`;
+
+                            const zip = new JSZip();
+                            const limit = 26000;
+                            const totalChunks = Math.ceil(data.length / limit);
+
+                            for (let i = 0; i < totalChunks; i++) {
+                                showMessage(`กำลังสร้างไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
+                                await new Promise(r => setTimeout(r, 10));
+
+                                const chunk = data.slice(i * limit, (i + 1) * limit);
+                                let txtContentArr = [];
+
+                                chunk.forEach(row => {
+                                    const getVal = (key) => {
+                                        const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
+                                        return foundKey ? (row[foundKey] || "").trim() : "";
+                                    };
+
+                                    const docNum = getVal("document number");
+                                    const fiscYear = getVal("fiscal year");
+                                    const lineItem = getVal("line item");
+                                    const textVal = getVal("text");
+
+                                    let str = "SAPMF05L   0102X\r\n" +
+                                              `                RF05L-BELNR                        ${docNum}\r\n` +
+                                              "                RF05L-BUKRS                        1000\r\n" +
+                                              `                RF05L-GJAHR                        ${fiscYear}\r\n` +
+                                              `                RF05L-BUZEI                        ${lineItem}\r\n` +
+                                              "                BDC_OKCODE                         /00\r\n" +
+                                              "SAPMF05L   0301X\r\n";
+
+                                    if (type === 'assignment') {
+                                        str += `                BSEG-ZUONR                         ${textVal}\r\n`;
+                                    } else {
+                                        str += `                BSEG-SGTXT                         ${textVal}\r\n`;
+                                    }
+                                    
+                                    str += "                BDC_OKCODE                         =AE\r\n" +
+                                           "TCDEFB09\r\n";
+
+                                    txtContentArr.push(str);
+                                });
+
+                                txtContentArr.push("ENDTCDE\r\n");
+                                
+                                const typeLabel = type === 'assignment' ? 'Assignment' : 'Text';
+                                zip.file(`FB09_${typeLabel}_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
+                            }
+
+                            showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP (ใกล้เสร็จแล้ว)...`, "info");
+                            await new Promise(r => setTimeout(r, 100)); 
+
+                            zip.generateAsync({type: "blob"}).then(function(content) {
+                                const url = URL.createObjectURL(content);
+                                const link = document.createElement('a');
+                                link.setAttribute('href', url);
+                                link.setAttribute('download', `Manual_FB09_${type}_Scripts.zip`);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(url);
+                                showMessage(`สร้างไฟล์ ZIP FB09 ${type} สำเร็จแล้ว!`, "success");
+                            });
+
+                        } catch (error) {
+                            showMessage("เกิดข้อผิดพลาดในการสร้าง ZIP: " + error.message, "error");
+                        }
+                    }, 50);
+
+                    inputElement.value = '';
+                },
+                error: function(err) {
+                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message);
+                    inputElement.value = '';
+                }
+            });
+        }
+
+        // --- โหมดสร้าง F_30 M (ปุ่มเดียว) ---
+        async function handleManualF30(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function(results) {
+                    const data = results.data;
+                    if (data.length === 0) {
+                        alert("ไฟล์ไม่มีข้อมูล");
+                        inputElement.value = '';
+                        return;
+                    }
+                    
+                    const firstRowKeys = Object.keys(data[0]).map(k => k.trim().toLowerCase());
+                    const hasDate = firstRowKeys.includes("date");
+                    const hasCustomer = firstRowKeys.includes("customer");
+                    const hasText = firstRowKeys.includes("text");
+
+                    if (!hasDate || !hasCustomer || !hasText) {
+                        alert("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Date, customer, text");
+                        inputElement.value = '';
+                        return;
+                    }
+
+                    showMessage(`กำลังเตรียมบีบอัดไฟล์ ZIP สำหรับ F_30 M...`, "info");
+
+                    setTimeout(async () => {
+                        try {
+                            const todayDate = new Date();
+                            const dd = String(todayDate.getDate()).padStart(2, '0');
+                            const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                            const fileDateStr = `${dd}.${mm}`;
+
+                            const zip = new JSZip();
+                            const limit = 2000;
+                            const totalChunks = Math.ceil(data.length / limit);
+
+                            // ปลอดภัยยิ่งขึ้น: ตรวจสอบและดึงค่าจาก Template (หากไม่พบคีย์ให้ใช้ Default)
+                            let rawTemplate = (f30TemplateTextInput ? f30TemplateTextInput.value : defaultF30Text_ForTextMode).replace(/\r?\n/g, '\r\n');
+
+                            for (let i = 0; i < totalChunks; i++) {
+                                showMessage(`กำลังสร้างไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
+                                await new Promise(r => setTimeout(r, 10));
+
+                                const chunk = data.slice(i * limit, (i + 1) * limit);
+                                let txtContentArr = [];
+
+                                chunk.forEach(row => {
+                                    const getVal = (key) => {
+                                        const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
+                                        return foundKey ? (row[foundKey] || "").trim() : "";
+                                    };
+
+                                    const dateVal = getVal("date");
+                                    const custVal = getVal("customer");
+                                    const textVal = getVal("text");
+
+                                    let processedTemplate = rawTemplate
+                                        .split('(today,"dd.mm.yyyy")').join(dateVal)
+                                        .split('(Customer)').join(custVal)
+                                        .split('(Text=0O/I(U))').join(textVal);
+
+                                    if (!processedTemplate.endsWith('\r\n')) {
+                                        processedTemplate += '\r\n';
+                                    }
+                                    
+                                    txtContentArr.push(processedTemplate);
+                                });
+
+                                zip.file(`F_30_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
+                            }
+
+                            showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP (ใกล้เสร็จแล้ว)...`, "info");
+                            await new Promise(r => setTimeout(r, 100));
+
+                            zip.generateAsync({type: "blob"}).then(function(content) {
+                                const url = URL.createObjectURL(content);
+                                const link = document.createElement('a');
+                                link.setAttribute('href', url);
+                                link.setAttribute('download', `Manual_F30_Scripts.zip`);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(url);
+                                showMessage(`สร้างไฟล์ ZIP F_30 สำเร็จแล้ว!`, "success");
+                            });
+
+                        } catch (error) {
+                            showMessage("เกิดข้อผิดพลาดในการสร้าง ZIP: " + error.message, "error");
+                        }
+                    }, 50);
+
+                    inputElement.value = '';
+                },
+                error: function(err) {
+                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message);
+                    inputElement.value = '';
+                }
+            });
+        }
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('bg-blue-50', 'border-blue-400');
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-blue-50', 'border-blue-400');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                processFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', function(e) {
+            if (this.files.length) {
+                processFile(this.files[0]);
+            }
+        });
+
+        function showMessage(msg, type = 'info') {
+            const loadingHTML = type === 'info' && msg.includes("กำลัง") ? `<span class="loader"></span>` : ``;
+            statusMessage.innerHTML = loadingHTML + msg;
+            statusMessage.className = `p-4 mb-6 rounded-lg font-medium text-center shadow-sm ${
+                type === 'error' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                type === 'success' ? 'bg-green-100 text-green-700 border border-green-200' : 
+                'bg-blue-50 text-blue-700 border border-blue-200'
+            }`;
+            statusMessage.classList.remove('hidden');
+        }
+
+        // --- ระบบคัดกรองหลัก ---
+        function processFile(file) {
+            
+            const selectedLogicRadio = document.querySelector('input[name="mainLogicSelection"]:checked');
+            currentUsedLogic = selectedLogicRadio ? selectedLogicRadio.value : "text";
+
+            showMessage("กำลังเปิดอ่านไฟล์ (อาจใช้เวลาครู่หนึ่งหากไฟล์ใหญ่)...", "info");
+            resultSection.classList.add('hidden');
+            searchInput.value = '';
+
+            setTimeout(() => {
+                Papa.parse(file, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        const data = results.data;
+                        
+                        if (data.length < 2) {
+                            showMessage("ไฟล์ไม่มีข้อมูลหรือรูปแบบไม่ถูกต้อง", "error");
+                            return;
+                        }
+
+                        headerRow = data[0];
+                        
+                        const idxCustomer = headerRow.findIndex(h => h.trim().toLowerCase() === "customer");
+                        const idxRefKey1 = headerRow.findIndex(h => h.trim().toLowerCase() === "reference key 1");
+                        const idxRefKey2 = headerRow.findIndex(h => h.trim().toLowerCase() === "reference key 2");
+                        const idxText = headerRow.findIndex(h => h.trim().toLowerCase() === "text");
+                        const idxValue = headerRow.findIndex(h => h.trim().toLowerCase() === "company code currency value");
+                        const idxReference = headerRow.findIndex(h => h.trim().toLowerCase() === "reference");
+                        
+                        const idxDocNum = headerRow.findIndex(h => h.trim().toLowerCase() === "document number");
+                        const idxFiscalYear = headerRow.findIndex(h => h.trim().toLowerCase() === "fiscal year");
+                        const idxLineItem = headerRow.findIndex(h => h.trim().toLowerCase() === "line item");
+                        
+                        const idxDocDate = headerRow.findIndex(h => h.trim().toLowerCase() === "document date");
+
+                        if (idxCustomer === -1 || idxRefKey1 === -1 || idxRefKey2 === -1 || idxText === -1 || idxValue === -1 || idxReference === -1 || idxDocNum === -1 || idxFiscalYear === -1 || idxLineItem === -1) {
+                            showMessage("ไม่พบคอลัมน์ที่ต้องการทั้งหมด โปรดตรวจสอบหัวคอลัมน์ในไฟล์ให้ครบ", "error");
+                            return;
+                        }
+
+                        if (currentUsedLogic === "date" && idxDocDate === -1) {
+                            showMessage("คุณเลือกโหมดจับคู่แบบ Date แต่ไม่พบคอลัมน์ 'Document Date' ในไฟล์", "error");
+                            return;
+                        }
+
+                        showMessage("กำลังคำนวณยอดและจัดกลุ่มข้อมูล...", "info");
+
+                        setTimeout(() => {
+                            const groups = {};
+                            
+                            for (let i = 1; i < data.length; i++) {
+                                const row = data[i];
+
+                                const referenceVal = (row[idxReference] || "").trim();
+                                if (!referenceVal) continue;
+
+                                const customerVal = (row[idxCustomer] || "").trim();
+                                const refKey1Val = (row[idxRefKey1] || "").trim();
+                                const refKey2Val = (row[idxRefKey2] || "").trim();
+                                const textVal = (row[idxText] || "").trim();
+                                
+                                let docDateFormatted = "";
+                                if (idxDocDate !== -1) {
+                                    docDateFormatted = formatToMMDDYYYY((row[idxDocDate] || "").trim());
+                                }
+
+                                let groupKey = "";
+                                if (currentUsedLogic === "date") {
+                                    groupKey = `${customerVal}${refKey1Val}${refKey2Val}${docDateFormatted}`;
+                                } else {
+                                    groupKey = `${customerVal}${refKey1Val}${refKey2Val}${textVal}`;
+                                }
+                                
+                                const valueStr = (row[idxValue] || "0").replace(/,/g, '');
+                                const valueNum = parseFloat(valueStr) || 0;
+
+                                if (!groups[groupKey]) {
+                                    groups[groupKey] = { 
+                                        sum: 0, 
+                                        customer: customerVal, 
+                                        refKey1: refKey1Val,
+                                        refKey2: refKey2Val, 
+                                        textVal: textVal,
+                                        docDate: docDateFormatted,
+                                        rows: [] 
+                                    };
+                                }
+                                
+                                groups[groupKey].sum += valueNum;
+                                
+                                groups[groupKey].rows.push({
+                                    refKey1: refKey1Val,
+                                    docNum: (row[idxDocNum] || "").trim(),
+                                    fiscalYear: (row[idxFiscalYear] || "").trim(),
+                                    lineItem: (row[idxLineItem] || "").trim()
+                                });
+                            }
+
+                            showMessage("กำลังคัดกรองรายการที่ยอดรวมเป็น 0...", "info");
+
+                            setTimeout(() => {
+                                allResultData = [];
+                                exportData = [];
+
+                                for (const key in groups) {
+                                    const group = groups[key];
+                                    const roundedSum = Math.abs(Math.round(group.sum * 1000) / 1000);
+                                    
+                                    if (roundedSum === 0) {
+                                        allResultData.push({
+                                            "Customer": group.customer,
+                                            "Reference Key 1": group.refKey1,
+                                            "Reference Key 2": group.refKey2,
+                                            "Text": group.textVal,
+                                            "Document Date": group.docDate,
+                                            "Combined Key": key
+                                        });
+
+                                        group.rows.forEach(r => {
+                                            exportData.push({
+                                                "Customer": group.customer,
+                                                "Reference Key 1": group.refKey1,
+                                                "Reference Key 2": group.refKey2,
+                                                "Text": group.textVal,
+                                                "Document Date": group.docDate,
+                                                "Combined Key": key,
+                                                "Document Number": r.docNum,
+                                                "Fiscal Year": r.fiscalYear,
+                                                "Line item": r.lineItem
+                                            });
+                                        });
+                                    }
+                                }
+
+                                if (allResultData.length === 0) {
+                                    showMessage("ไม่พบข้อมูลที่ตรงเงื่อนไข (ยอดเป็น 0 และมี Reference)", "error");
+                                    return;
+                                }
+
+                                showMessage("กำลังสร้างตารางแสดงผล...", "info");
+
+                                setTimeout(() => {
+                                    renderTable(allResultData);
+                                    showMessage(`ประมวลผลสำเร็จ! โหมด ${currentUsedLogic.toUpperCase()} - พบ Key ที่เข้าเงื่อนไข ${allResultData.length} รายการ`, "success");
+                                    recordCount.textContent = `(${allResultData.length} รายการ)`;
+                                    resultSection.classList.remove('hidden');
+                                }, 10);
+                            }, 50);
+                        }, 50);
+                    },
+                    error: function(error) {
+                        showMessage("เกิดข้อผิดพลาดในการอ่านไฟล์ CSV: " + error.message, "error");
+                    }
+                });
+            }, 50); 
+        }
+
+        function filterTable() {
+            const query = searchInput.value.toLowerCase();
+            const filteredData = allResultData.filter(row => {
+                const combinedString = `${row["Customer"]} ${row["Text"]} ${row["Document Date"]} ${row["Combined Key"]}`.toLowerCase();
+                return combinedString.includes(query);
+            });
+            
+            renderTable(filteredData);
+            
+            if(query === "") {
+                recordCount.textContent = `(${allResultData.length} รายการ)`;
+            } else {
+                recordCount.textContent = `(${filteredData.length} รายการ จากทั้งหมด ${allResultData.length})`;
+            }
+        }
+
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function renderTable(dataToRender) {
+            let headerHTML = '<tr>';
+            
+            const displayHeaders = ["Customer", "Reference Key 1", "Reference Key 2"];
+            if (currentUsedLogic === "date") {
+                displayHeaders.push("Document Date");
+            } else {
+                displayHeaders.push("Text");
+            }
+            displayHeaders.push("Combined Key");
+
+            displayHeaders.forEach(col => {
+                headerHTML += `<th scope="col" class="px-6 py-3 border-r">${escapeHTML(col)}</th>`;
+            });
+            headerHTML += '</tr>';
+            tableHead.innerHTML = headerHTML;
+
+            let bodyHTML = '';
+            const colCount = displayHeaders.length;
+
+            if (dataToRender.length === 0) {
+                bodyHTML = `<tr><td colspan="${colCount}" class="px-6 py-8 text-center text-gray-500">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+            } else {
+                const MAX_RENDER = 500;
+                const isTruncated = dataToRender.length > MAX_RENDER;
+                const displayData = isTruncated ? dataToRender.slice(0, MAX_RENDER) : dataToRender;
+
+                displayData.forEach((row, index) => {
+                    const bgClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                    bodyHTML += `<tr class="${bgClass} border-b hover:bg-gray-100">`;
+                    bodyHTML += `<td class="px-6 py-4 border-r font-medium text-gray-700">${escapeHTML(row["Customer"])}</td>`;
+                    bodyHTML += `<td class="px-6 py-4 border-r font-medium text-gray-700">${escapeHTML(row["Reference Key 1"])}</td>`;
+                    bodyHTML += `<td class="px-6 py-4 border-r font-medium text-gray-700">${escapeHTML(row["Reference Key 2"])}</td>`;
+                    
+                    if (currentUsedLogic === "date") {
+                        bodyHTML += `<td class="px-6 py-4 border-r font-medium text-blue-600">${escapeHTML(row["Document Date"])}</td>`;
+                    } else {
+                        bodyHTML += `<td class="px-6 py-4 border-r font-medium text-blue-600">${escapeHTML(row["Text"])}</td>`;
+                    }
+                    
+                    bodyHTML += `<td class="px-6 py-4 border-r font-bold text-gray-600 text-xs">${escapeHTML(row["Combined Key"])}</td>`;
+                    bodyHTML += '</tr>';
+                });
+
+                if (isTruncated) {
+                    bodyHTML += `<tr><td colspan="${colCount}" class="px-6 py-5 text-center text-orange-600 bg-orange-50 font-bold border-t-2 border-orange-200">
+                        ⚠️ แสดงผลตัวอย่าง 500 รายการแรก จากทั้งหมด ${dataToRender.length} รายการ (เพื่อป้องกันเบราว์เซอร์ค้าง)<br>
+                        <span class="text-sm font-normal">ไม่ต้องกังวล! เวลาคุณกดปุ่ม "โหลด Excel" หรือ "โหลด TXT" คุณจะได้ข้อมูลครบทุกรายการ 100% ตามปกติครับ</span>
+                    </td></tr>`;
+                }
+            }
+            tableBody.innerHTML = bodyHTML;
+        }
+
+        function processF30TemplateFast(baseTemplate, customer, textWithSuffix) {
+            let processedTemplate = baseTemplate
+                .split('(Customer)').join(customer)
+                .split('(Text=0O/I(U))').join(textWithSuffix);
+                
+            if (!processedTemplate.endsWith('\r\n')) {
+                processedTemplate += '\r\n';
+            }
+            return processedTemplate;
+        }
+
+        // --- โหลด TXT ZIP ระบบหลักแบบทำงานเร็ว ---
+        async function exportToTXT() {
+            if (exportData.length === 0) return;
+            
+            const query = searchInput.value.toLowerCase();
+            const dataToExport = exportData.filter(row => {
+                const combinedString = `${row["Customer"]} ${row["Text"]} ${row["Document Date"]} ${row["Combined Key"]}`.toLowerCase();
+                return combinedString.includes(query);
+            });
+
+            if (dataToExport.length === 0) {
+                alert('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด');
+                return;
+            }
+
+            showMessage("กำลังเตรียมไฟล์สำหรับการบีบอัด ZIP... (รอสักครู่)", "info");
+
+            setTimeout(async () => {
+                try {
+                    const todayDate = new Date();
+                    const dd = String(todayDate.getDate()).padStart(2, '0');
+                    const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                    const yyyy = todayDate.getFullYear();
+                    const todayStr = `${dd}.${mm}.${yyyy}`;
+                    const fileDateStr = `${dd}.${mm}`;
+
+                    const zip = new JSZip();
+
+                    const fb09Limit = 26000;
+                    const totalFb09Chunks = Math.ceil(dataToExport.length / fb09Limit);
+
+                    for (let i = 0; i < totalFb09Chunks; i++) {
+                        showMessage(`กำลังสร้างส่วนที่ ${i + 1} / ${totalFb09Chunks} สำหรับ FB09...`, "info");
+                        await new Promise(r => setTimeout(r, 10)); 
+
+                        const chunk = dataToExport.slice(i * fb09Limit, (i + 1) * fb09Limit);
+                        let txtContentWithSuffixArr = [];
+                        let txtContentNoSuffixArr = [];
+
+                        chunk.forEach(row => {
+                            let fb09FinalText = "";
+                            
+                            // --- 📌 จุดที่แก้ไขตามที่ผู้ใช้แจ้ง (Logic DATE=0) ---
+                            if (currentUsedLogic === "date") {
+                                // โหมด Date: เปลี่ยนค่าเป็นคำว่า DATE=0 เลย ไม่เอา Text จากไฟล์มาต่อ
+                                fb09FinalText = "DATE=0";
+                            } else {
+                                // โหมด Text: ใช้ Text จากไฟล์มาต่อด้วย Suffix (O, I, U)
+                                let suffix = "=0";
+                                const ref1 = (row["Reference Key 1"] || "").toUpperCase();
+                                const ref2 = (row["Reference Key 2"] || "").toUpperCase();
+
+                                if (ref1 === "OPD") {
+                                    suffix = "=0O";
+                                } else if (ref1 === "IPD") {
+                                    suffix = "=0I";
+                                }
+
+                                if (ref2 === "UNK") {
+                                    suffix += "U";
+                                }
+                                fb09FinalText = row["Text"] + suffix;
+                            }
+                            // ----------------------------------------------------
+
+                            let withSuffixStr = "SAPMF05L   0102X\r\n" +
+                                `                RF05L-BELNR                        ${row["Document Number"]}\r\n` +
+                                "                RF05L-BUKRS                        1000\r\n" +
+                                `                RF05L-GJAHR                        ${row["Fiscal Year"]}\r\n` +
+                                `                RF05L-BUZEI                        ${row["Line item"]}\r\n` +
+                                "                BDC_OKCODE                         /00\r\n" +
+                                "SAPMF05L   0301X\r\n" +
+                                `                BSEG-SGTXT                         ${fb09FinalText}\r\n` +
+                                "                BDC_OKCODE                         =AE\r\n" +
+                                "TCDEFB09\r\n";
+
+                            let noSuffixStr = "SAPMF05L   0102X\r\n" +
+                                `                RF05L-BELNR                        ${row["Document Number"]}\r\n` +
+                                "                RF05L-BUKRS                        1000\r\n" +
+                                `                RF05L-GJAHR                        ${row["Fiscal Year"]}\r\n` +
+                                `                RF05L-BUZEI                        ${row["Line item"]}\r\n` +
+                                "                BDC_OKCODE                         /00\r\n" +
+                                "SAPMF05L   0301X\r\n" +
+                                `                BSEG-SGTXT                         ${row["Text"]}\r\n` +
+                                "                BDC_OKCODE                         =AE\r\n" +
+                                "TCDEFB09\r\n";
+
+                            txtContentWithSuffixArr.push(withSuffixStr);
+                            txtContentNoSuffixArr.push(noSuffixStr);
+                        });
+
+                        txtContentWithSuffixArr.push("ENDTCDE\r\n");
+                        txtContentNoSuffixArr.push("ENDTCDE\r\n");
+
+                        zip.file(`FB09_${fileDateStr}${i + 1}.txt`, txtContentWithSuffixArr.join(""));
+                        zip.file(`FB09_${fileDateStr}${i + 1}R.txt`, txtContentNoSuffixArr.join(""));
+                    }
+
+                    const f30UniqueList = [];
+                    const seenF30Groups = new Set();
+                    dataToExport.forEach(row => {
+                        if (!seenF30Groups.has(row["Combined Key"])) {
+                            seenF30Groups.add(row["Combined Key"]);
+                            f30UniqueList.push(row);
+                        }
+                    });
+
+                    const f30Limit = 2000;
+                    const totalF30Chunks = Math.ceil(f30UniqueList.length / f30Limit);
+
+                    // ตรวจสอบและดึง Template อย่างปลอดภัย (หากกล่อง Element หายไปให้ใช้ Default แทน เพื่อป้องกัน Exception)
+                    let rawTemplate = "";
+                    if (currentUsedLogic === "date") {
+                        rawTemplate = (f30TemplateDateInput ? f30TemplateDateInput.value : defaultF30Text_ForDateMode).replace(/\r?\n/g, '\r\n');
+                    } else {
+                        rawTemplate = (f30TemplateTextInput ? f30TemplateTextInput.value : defaultF30Text_ForTextMode).replace(/\r?\n/g, '\r\n');
+                    }
+                        
+                    let baseF30Template = rawTemplate.split('(today,"dd.mm.yyyy")').join(todayStr);
+
+                    for (let i = 0; i < totalF30Chunks; i++) {
+                        showMessage(`กำลังสร้างส่วนที่ ${i + 1} / ${totalF30Chunks} สำหรับ F_30...`, "info");
+                        await new Promise(r => setTimeout(r, 10));
+
+                        const chunk = f30UniqueList.slice(i * f30Limit, (i + 1) * f30Limit);
+                        let txtContentF30Arr = [];
+
+                        chunk.forEach(row => {
+                            let suffix = "=0";
+                            const ref1 = (row["Reference Key 1"] || "").toUpperCase();
+                            const ref2 = (row["Reference Key 2"] || "").toUpperCase();
+
+                            if (ref1 === "OPD") {
+                                suffix = "=0O";
+                            } else if (ref1 === "IPD") {
+                                suffix = "=0I";
+                            }
+
+                            if (ref2 === "UNK") {
+                                suffix += "U";
+                            }
+
+                            const f30Text = row["Text"] + suffix;
+                            const customer = row["Customer"] || "";
+                            
+                            txtContentF30Arr.push(processF30TemplateFast(baseF30Template, customer, f30Text));
+                        });
+
+                        zip.file(`F_30_${fileDateStr}_${i + 1}.txt`, txtContentF30Arr.join(""));
+                    }
+
+                    showMessage("กำลังบีบอัดเป็นไฟล์ ZIP (ใกล้เสร็จแล้ว)...", "info");
+                    await new Promise(r => setTimeout(r, 100));
+
+                    zip.generateAsync({type: "blob"})
+                        .then(function(content) {
+                            const url = URL.createObjectURL(content);
+                            const link = document.createElement('a');
+                            link.setAttribute('href', url);
+                            link.setAttribute('download', 'Zero_Sum_Scripts.zip');
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url);
+
+                            showMessage("สร้างไฟล์ ZIP และดาวน์โหลดสำเร็จแล้ว!", "success");
+                        })
+                        .catch(function(err) {
+                            showMessage("เกิดข้อผิดพลาดในการสร้างไฟล์ ZIP: " + err.message, "error");
+                        });
+
+                } catch (error) {
+                    showMessage("เกิดข้อผิดพลาดระหว่างบีบอัดไฟล์: " + error.message, "error");
+                }
+            }, 50);
+        }
+
+        function exportToExcel() {
+            if (exportData.length === 0) return;
+            
+            const query = searchInput.value.toLowerCase();
+            const dataToExport = exportData.filter(row => {
+                const combinedString = `${row["Customer"]} ${row["Text"]} ${row["Document Date"]} ${row["Combined Key"]}`.toLowerCase();
+                return combinedString.includes(query);
+            });
+
+            if (dataToExport.length === 0) {
+                alert('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด');
+                return;
+            }
+
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            
+            const wscols = [
+                {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, 
+                {wch: 15}, {wch: 35}, {wch: 15}, {wch: 12}, {wch: 10}
+            ];
+            ws['!cols'] = wscols;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Zero Sum Matched");
+            
+            XLSX.writeFile(wb, "Zero_Sum_Details.xlsx");
+        }
+    </script>
+</body>
+</html>
