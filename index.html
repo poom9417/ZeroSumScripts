@@ -1051,8 +1051,8 @@ ENDTCDE`;
                         txtContentWithSuffixArr.push("ENDTCDE\r\n");
                         txtContentNoSuffixArr.push("ENDTCDE\r\n");
 
-                        zip.file(`FB09_${fileDateStr}_${i + 1}.txt`, txtContentWithSuffixArr.join(""));
-                        zip.file(`FB09_${fileDateStr}_${i + 1}R.txt`, txtContentNoSuffixArr.join(""));
+                        zip.file(`FB09_${fileDateStr}${i + 1}.txt`, txtContentWithSuffixArr.join(""));
+                        zip.file(`FB09_${fileDateStr}${i + 1}R.txt`, txtContentNoSuffixArr.join(""));
                     }
 
                     const f30UniqueList = [];
