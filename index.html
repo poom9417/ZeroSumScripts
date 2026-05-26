@@ -999,10 +999,10 @@ ENDTCDE`;
                         chunk.forEach(row => {
                             let fb09FinalText = "";
                             
-                            // --- 📌 จุดที่แก้ไขตามที่ผู้ใช้แจ้ง (Logic OPD=0) ---
+                            // --- 📌 จุดที่แก้ไขตามที่ผู้ใช้แจ้ง (Logic DATE=0) ---
                             if (currentUsedLogic === "date") {
-                                // โหมด Date: เปลี่ยนค่าเป็นคำว่า OPD=0 เลย ไม่เอา Text จากไฟล์มาต่อ
-                                fb09FinalText = "OPD=0";
+                                // โหมด Date: เปลี่ยนค่าเป็นคำว่า DATE=0 เลย ไม่เอา Text จากไฟล์มาต่อ
+                                fb09FinalText = "DATE=0";
                             } else {
                                 // โหมด Text: ใช้ Text จากไฟล์มาต่อด้วย Suffix (O, I, U)
                                 let suffix = "=0";
