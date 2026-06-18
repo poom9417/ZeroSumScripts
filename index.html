@@ -43,19 +43,19 @@
                     </button>
                 </div>
                 
-                <p class="text-sm text-yellow-700 mb-5">เลือกไฟล์ CSV ที่มีหัวคอลัมน์ตรงตามเงื่อนไขเพื่อสร้าง Script ทันที (นำเมาส์ชี้ที่ปุ่ม 1 วินาทีเพื่อดูเงื่อนไข)</p>
+                <p class="text-sm text-yellow-700 mb-5">เลือกวิธีสร้างสคริปต์ด่วน: สามารถอัปโหลดไฟล์ CSV หรือกดวางข้อมูลจาก Excel ได้ทันที</p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     
                     <div class="relative group flex-1 flex">
                         <input type="file" id="fb09AssignmentManualInput" accept=".csv" class="hidden" onchange="handleManualFB09(this, 'assignment')">
-                        <button onclick="document.getElementById('fb09AssignmentManualInput').click()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                        <button onclick="openScriptSourceChoice('fb09_assignment')" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             FB09 Assignment M
                         </button>
                         <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
                             <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ FB09</p>
-                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <p class="mt-1">ไฟล์หรือข้อมูลนำเข้าต้องมีหัวคอลัมน์:</p>
                             <ul class="list-disc pl-4 mt-1 text-gray-300">
                                 <li>Document Number</li>
                                 <li>Fiscal Year</li>
@@ -68,13 +68,13 @@
 
                     <div class="relative group flex-1 flex">
                         <input type="file" id="fb09TextManualInput" accept=".csv" class="hidden" onchange="handleManualFB09(this, 'text')">
-                        <button onclick="document.getElementById('fb09TextManualInput').click()" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                        <button onclick="openScriptSourceChoice('fb09_text')" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             FB09 Text M
                         </button>
                         <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
                             <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ FB09</p>
-                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <p class="mt-1">ไฟล์หรือข้อมูลนำเข้าต้องมีหัวคอลัมน์:</p>
                             <ul class="list-disc pl-4 mt-1 text-gray-300">
                                 <li>Document Number</li>
                                 <li>Fiscal Year</li>
@@ -87,14 +87,14 @@
 
                     <div class="relative group flex-1 flex">
                         <input type="file" id="f30ManualInput" accept=".csv" class="hidden" onchange="handleManualF30(this)">
-                        <button onclick="document.getElementById('f30ManualInput').click()" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
+                        <button onclick="openScriptSourceChoice('f30')" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition shadow flex justify-center items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             F_30 M
                         </button>
                         <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 delay-[1000ms] z-50 text-left shadow-xl border border-gray-700 pointer-events-none">
                             <p class="font-bold text-yellow-400 mb-1 border-b border-gray-700 pb-1">📌 เงื่อนไขไฟล์ F_30</p>
                             <p class="mt-1 text-blue-300">ดึงข้อมูลจาก "Template แบบ Text"</p>
-                            <p class="mt-1">ไฟล์ CSV ต้องมีหัวคอลัมน์:</p>
+                            <p class="mt-1">ไฟล์หรือข้อมูลนำเข้าต้องมีหัวคอลัมน์:</p>
                             <ul class="list-disc pl-4 mt-1 text-gray-300">
                                 <li>Date <span class="text-gray-500">(เช่น 31.12.2024)</span></li>
                                 <li>customer</li>
@@ -174,11 +174,142 @@
         </div>
     </div>
 
+    <!-- Modal 1: เลือกวิธีนำเข้าข้อมูล (อัปโหลด หรือ วางข้อมูล) -->
+    <div id="choiceModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all border border-gray-100">
+            <div class="bg-blue-600 p-5 text-white flex justify-between items-center">
+                <h3 class="text-lg font-bold" id="choiceModalTitle">เลือกวิธีนำเข้าข้อมูล</h3>
+                <button onclick="closeChoiceModal()" class="text-white hover:text-gray-200 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-gray-600">โปรดเลือกวิธีการนำเข้าข้อมูลสำหรับการสร้าง Script ด่วนในขั้นตอนต่อไป:</p>
+                
+                <button id="choiceUploadBtn" class="w-full p-4 border-2 border-dashed border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-lg transition text-left flex items-center gap-4">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">อัปโหลดไฟล์ (.csv)</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">เลือกจากไฟล์ในเครื่องคอมพิวเตอร์ของคุณ</p>
+                    </div>
+                </button>
+
+                <button id="choicePasteBtn" class="w-full p-4 border-2 border-dashed border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 rounded-lg transition text-left flex items-center gap-4">
+                    <div class="p-3 bg-indigo-100 text-indigo-600 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">วางข้อมูลเลย (จาก Excel)</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">คัดลอกเซลล์ใน Excel แล้วนำมาวางได้ตามต้องการ</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: หน้าวางข้อมูล Excel และแสดงพรีวิวตาราง -->
+    <div id="pasteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all border border-gray-100">
+            
+            <div class="bg-indigo-600 p-5 text-white flex justify-between items-center shrink-0">
+                <div>
+                    <h3 class="text-lg font-bold" id="pasteModalTitle">วางข้อมูลจาก Excel</h3>
+                    <p class="text-xs text-indigo-100 mt-0.5" id="pasteModalSubtitle">เลือกวิธีวางข้อมูลที่ต้องการ แล้วกดวางข้อมูลลงในช่องที่ระบบกำหนด</p>
+                </div>
+                <button onclick="closePasteModal()" class="text-white hover:text-gray-200 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                
+                <!-- Radio Buttons เลือกวิธีวางข้อมูล -->
+                <div class="p-4 bg-indigo-50/50 border border-indigo-100 rounded-lg flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <span class="text-sm font-bold text-indigo-900">ตัวเลือกวิธีการวางข้อมูล:</span>
+                    <div class="flex flex-wrap gap-4">
+                        <label class="inline-flex items-center cursor-pointer text-sm">
+                            <input type="radio" name="pasteMethodSelect" value="single" class="form-radio text-indigo-600 w-4 h-4 focus:ring-indigo-500" checked onchange="togglePasteMethod('single')">
+                            <span class="ml-2 font-semibold text-gray-800">1. วางรวมทีเดียวทุกคอลัมน์ (Copy ตาราง Excel)</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer text-sm">
+                            <input type="radio" name="pasteMethodSelect" value="multi" class="form-radio text-indigo-600 w-4 h-4 focus:ring-indigo-500" onchange="togglePasteMethod('multi')">
+                            <span class="ml-2 font-semibold text-gray-800">2. วางแยกคอลัมน์ (คัดลอกทีละช่องตาราง)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ข้อมูลแนะนำคอลัมน์ -->
+                <div class="p-3.5 bg-indigo-50 border border-indigo-100 rounded-lg text-sm text-indigo-900" id="pasteRequirementsBox">
+                    <!-- จะถูกเติมข้อมูลด้วย JavaScript ตามหัวข้อที่เลือก -->
+                </div>
+
+                <!-- 1. วางข้อมูลรวมทีเดียว (Single Paste Container) -->
+                <div id="singlePasteContainer" class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-gray-700">กล่องวางข้อมูลรวมทุกคอลัมน์ (Ctrl + V):</label>
+                    <textarea id="excelPasteArea" rows="6" oninput="handleExcelPasteInput()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-xs placeholder-gray-400" placeholder="คัดลอกข้อมูลใน Excel ทั้งแผ่นหรือเฉพาะส่วน (รวมหัวคอลัมน์) แล้ววางที่นี่..."></textarea>
+                </div>
+
+                <!-- 2. วางข้อมูลแยกคอลัมน์ (Multi Paste Container) -->
+                <div id="multiPasteContainer" class="space-y-2 hidden">
+                    <label class="block text-sm font-semibold text-gray-700">กล่องวางข้อมูลแยกคอลัมน์ (คัดลอกจาก Excel มาวางแยกทีละช่อง):</label>
+                    <div id="columnPasteGrid" class="grid grid-cols-1 gap-3">
+                        <!-- Dynamic Columns Inputs will render here -->
+                    </div>
+                </div>
+
+                <!-- ส่วนแสดงสถานะการดักจับข้อผิดพลาด / ขีดจำกัดแถว -->
+                <div id="pasteValidationAlert" class="hidden p-4 rounded-lg font-medium text-sm"></div>
+
+                <!-- ส่วนแสดงผลพรีวิวตารางข้อมูลที่วาง -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-semibold text-gray-700">พรีวิวจำลองข้อมูลที่ได้จากการวาง (สูงสุด 10 รายการแรก):</span>
+                        <span id="pasteCounterBadge" class="px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800">ยังไม่มีข้อมูล</span>
+                    </div>
+                    
+                    <div class="border rounded-lg overflow-x-auto max-h-48">
+                        <table class="w-full text-xs text-left text-gray-600 whitespace-nowrap">
+                            <thead class="bg-gray-50 border-b">
+                                <tr id="pastePreviewTableHead">
+                                    <!-- Dynamic headers -->
+                                </tr>
+                            </thead>
+                            <tbody id="pastePreviewTableBody">
+                                <tr>
+                                    <td class="px-4 py-6 text-center text-gray-400" id="pasteTablePlaceholder">กรุณาวางข้อมูลในช่องเพื่อจำลองพรีวิวข้อมูล</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ส่วนท้ายปุ่มกดสั่งงาน -->
+            <div class="p-4 bg-gray-50 border-t flex flex-col sm:flex-row justify-end items-center gap-3 shrink-0">
+                <button onclick="closePasteModal()" class="w-full sm:w-auto px-5 py-2.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+                    ยกเลิก
+                </button>
+                <button id="pasteSubmitBtn" disabled onclick="submitPastedDataScript()" class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition shadow disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    ยืนยันการสร้างไฟล์สคริปต์
+                </button>
+            </div>
+
+        </div>
+    </div>
+
     <script>
         let allResultData = [];
         let exportData = [];
         let headerRow = [];
         let currentUsedLogic = "text"; 
+
+        // ตัวแปรสำหรับระบบเลือกช่องทางด่วน
+        let currentActiveScriptType = ""; // fb09_assignment, fb09_text, f30
+        let parsedPastedRows = []; // ข้อมูลดิบที่แปรผลมาจาก Excel
+        let activePasteMethod = "single"; // single or multi
 
         const fileInput = document.getElementById('csvFileInput');
         const dropZone = document.getElementById('drop-zone');
@@ -388,10 +519,6 @@ TCDEF-30
 ENDTCDE`;
         // =========================================================
 
-        window.onload = function() {
-            // โหลดสคริปต์เสร็จสมบูรณ์
-        };
-
         function formatToMMDDYYYY(dateStr) {
             if (!dateStr) return "";
             const match = dateStr.match(/^(\d{1,2})[\.\-\/](\d{1,2})[\.\-\/](\d{4})$/);
@@ -455,7 +582,645 @@ ENDTCDE`;
             });
         }
 
-        // --- โหมดสร้าง FB09 M ---
+        // =========================================================
+        // ฟังก์ชันระบบเลือกช่องทางนำเข้าข้อมูลใหม่ (อัปโหลด หรือ วางข้อมูล)
+        // =========================================================
+        function openScriptSourceChoice(scriptType) {
+            currentActiveScriptType = scriptType;
+            
+            let titleText = "";
+            if (scriptType === 'fb09_assignment') titleText = "FB09 Assignment M";
+            else if (scriptType === 'fb09_text') titleText = "FB09 Text M";
+            else if (scriptType === 'f30') titleText = "F_30 M";
+
+            document.getElementById('choiceModalTitle').textContent = `สร้าง Script ด่วน: ${titleText}`;
+            
+            const choiceUploadBtn = document.getElementById('choiceUploadBtn');
+            choiceUploadBtn.onclick = function() {
+                closeChoiceModal();
+                if (scriptType === 'fb09_assignment') {
+                    document.getElementById('fb09AssignmentManualInput').click();
+                } else if (scriptType === 'fb09_text') {
+                    document.getElementById('fb09TextManualInput').click();
+                } else if (scriptType === 'f30') {
+                    document.getElementById('f30ManualInput').click();
+                }
+            };
+
+            const choicePasteBtn = document.getElementById('choicePasteBtn');
+            choicePasteBtn.onclick = function() {
+                closeChoiceModal();
+                openPasteModal(scriptType);
+            };
+
+            document.getElementById('choiceModal').classList.remove('hidden');
+        }
+
+        function closeChoiceModal() {
+            document.getElementById('choiceModal').classList.add('hidden');
+        }
+
+        function openPasteModal(scriptType) {
+            currentActiveScriptType = scriptType;
+            parsedPastedRows = [];
+            
+            const pasteModalTitle = document.getElementById('pasteModalTitle');
+            const pasteRequirementsBox = document.getElementById('pasteRequirementsBox');
+            const pasteValidationAlert = document.getElementById('pasteValidationAlert');
+            const pasteSubmitBtn = document.getElementById('pasteSubmitBtn');
+            const pastePreviewTableHead = document.getElementById('pastePreviewTableHead');
+            const pastePreviewTableBody = document.getElementById('pastePreviewTableBody');
+            const pasteCounterBadge = document.getElementById('pasteCounterBadge');
+            const columnPasteGrid = document.getElementById('columnPasteGrid');
+            const excelPasteArea = document.getElementById('excelPasteArea');
+
+            // ล้างค่าข้อมูลภายในกล่องข้อความต่าง ๆ
+            excelPasteArea.value = "";
+            pasteValidationAlert.classList.add('hidden');
+            pasteSubmitBtn.disabled = true;
+            pasteCounterBadge.textContent = "ยังไม่มีข้อมูล";
+            pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800";
+            columnPasteGrid.innerHTML = "";
+            
+            // ล้างตารางพรีวิว
+            pastePreviewTableBody.innerHTML = `<tr><td id="pasteTablePlaceholder" class="px-4 py-6 text-center text-gray-400">กรุณาวางข้อมูลในกล่องข้อความเพื่อจำลองพรีวิวตารางข้อมูล</td></tr>`;
+
+            let requirementsHTML = "";
+            let tableHeadHTML = "";
+
+            if (scriptType.startsWith('fb09')) {
+                const subType = scriptType === 'fb09_assignment' ? 'Assignment' : 'Text';
+                pasteModalTitle.textContent = `วางข้อมูลสำหรับ FB09 ${subType} M`;
+                
+                requirementsHTML = `
+                    <p class="font-bold">📋 โครงสร้างข้อมูลที่ระบบต้องการ:</p>
+                    <p class="text-xs text-indigo-950 mt-1">
+                        <b>หากเลือกวิธีที่ 1 (วางรวมทีเดียว):</b> คัดลอกตารางจาก Excel รวมถึงบรรทัดหัวคอลัมน์ (Document Number, Fiscal Year, Line item, Text)<br>
+                        <b>หากเลือกวิธีที่ 2 (วางแยกคอลัมน์):</b> คัดลอกข้อมูลเฉพาะแนวตั้งทีละคอลัมน์จาก Excel มาวางลงแต่ละกล่อง
+                    </p>
+                    <p class="mt-2 text-xs text-red-700 font-semibold">⚠️ ขีดจำกัดความจุ: ข้อมูลห้ามเกิน 26,000 แถว หากเกินระบบจะแจ้งให้ใช้วิธีอัปโหลดไฟล์ CSV แทน</p>
+                `;
+
+                tableHeadHTML = `
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Document Number</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Fiscal Year</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Line item</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Text</th>
+                `;
+
+                // เตรียมช่องวางคอลัมน์แยก 4 คอลัมน์
+                columnPasteGrid.className = "grid grid-cols-1 sm:grid-cols-4 gap-3";
+                
+                const columns = [
+                    { id: 'col_fb09_doc', label: '1. Document Number', placeholder: 'วางเลขที่เอกสาร...' },
+                    { id: 'col_fb09_year', label: '2. Fiscal Year', placeholder: 'วางปี Fiscal Year...' },
+                    { id: 'col_fb09_line', label: '3. Line Item', placeholder: 'วางบรรทัดรายการ...' },
+                    { id: 'col_fb09_text', label: `4. Text (${subType === 'Assignment' ? 'ZUONR' : 'SGTXT'})`, placeholder: 'วางข้อความ Text...' }
+                ];
+
+                columns.forEach(col => {
+                    columnPasteGrid.innerHTML += `
+                        <div class="space-y-1">
+                            <span class="block text-xs font-bold text-gray-700">${col.label}</span>
+                            <textarea id="${col.id}" oninput="handleColumnPasteInput()" rows="7" class="w-full p-2 border border-gray-300 rounded-lg font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400" placeholder="${col.placeholder}"></textarea>
+                        </div>
+                    `;
+                });
+
+            } else if (scriptType === 'f30') {
+                pasteModalTitle.textContent = `วางข้อมูลสำหรับ F_30 M`;
+                
+                requirementsHTML = `
+                    <p class="font-bold">📋 โครงสร้างข้อมูลที่ระบบต้องการ:</p>
+                    <p class="text-xs text-indigo-950 mt-1">
+                        <b>หากเลือกวิธีที่ 1 (วางรวมทีเดียว):</b> คัดลอกตารางจาก Excel รวมถึงบรรทัดหัวคอลัมน์ (Date, customer, text)<br>
+                        <b>หากเลือกวิธีที่ 2 (วางแยกคอลัมน์):</b> คัดลอกข้อมูลเฉพาะแนวตั้งทีละคอลัมน์จาก Excel มาวางลงแต่ละกล่อง
+                    </p>
+                    <p class="mt-2 text-xs text-red-700 font-semibold">⚠️ ขีดจำกัดความจุ: ข้อมูลห้ามเกิน 2,000 แถว หากเกินระบบจะแจ้งให้ใช้วิธีอัปโหลดไฟล์ CSV แทน</p>
+                `;
+
+                tableHeadHTML = `
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Date</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Customer</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Text</th>
+                `;
+
+                // เตรียมช่องวางคอลัมน์แยก 3 คอลัมน์
+                columnPasteGrid.className = "grid grid-cols-1 sm:grid-cols-3 gap-3";
+
+                const columns = [
+                    { id: 'col_f30_date', label: '1. Date (วันที่)', placeholder: 'วางวันระบุเอกสาร...' },
+                    { id: 'col_f30_cust', label: '2. Customer (ลูกค้า)', placeholder: 'วางรหัสลูกค้า...' },
+                    { id: 'col_f30_text', label: '3. Text (ข้อความ)', placeholder: 'วางข้อความ Text...' }
+                ];
+
+                columns.forEach(col => {
+                    columnPasteGrid.innerHTML += `
+                        <div class="space-y-1">
+                            <span class="block text-xs font-bold text-gray-700">${col.label}</span>
+                            <textarea id="${col.id}" oninput="handleColumnPasteInput()" rows="7" class="w-full p-2 border border-gray-300 rounded-lg font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400" placeholder="${col.placeholder}"></textarea>
+                        </div>
+                    `;
+                });
+            }
+
+            // บังคับให้เริ่มเปิด Modal ด้วยวิธีวางรวมทีเดียว (Single Paste) เสมอ
+            document.querySelector('input[name="pasteMethodSelect"][value="single"]').checked = true;
+            togglePasteMethod('single');
+
+            pasteRequirementsBox.innerHTML = requirementsHTML;
+            pastePreviewTableHead.innerHTML = tableHeadHTML;
+
+            document.getElementById('pasteModal').classList.remove('hidden');
+        }
+
+        function closePasteModal() {
+            document.getElementById('pasteModal').classList.add('hidden');
+        }
+
+        // =========================================================
+        // ฟังก์ชันควบคุมการสลับรูปแบบการวางข้อมูล และรีเฟรชค่าทั้งหมด
+        // =========================================================
+        function togglePasteMethod(method) {
+            activePasteMethod = method;
+            
+            const singleContainer = document.getElementById('singlePasteContainer');
+            const multiContainer = document.getElementById('multiPasteContainer');
+            
+            const excelPasteArea = document.getElementById('excelPasteArea');
+            const pasteValidationAlert = document.getElementById('pasteValidationAlert');
+            const pasteSubmitBtn = document.getElementById('pasteSubmitBtn');
+            const pastePreviewTableBody = document.getElementById('pastePreviewTableBody');
+            const pasteCounterBadge = document.getElementById('pasteCounterBadge');
+
+            // เคลียร์ค่าข้อมูลและประมวลผลที่มีอยู่เดิม เพื่อ "รีเฟรชการพรีวิวใหม่ทุกครั้งที่เปลี่ยนวิธี"
+            parsedPastedRows = [];
+            excelPasteArea.value = "";
+            pasteValidationAlert.classList.add('hidden');
+            pasteSubmitBtn.disabled = true;
+            pasteCounterBadge.textContent = "ยังไม่มีข้อมูล";
+            pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800";
+            pastePreviewTableBody.innerHTML = `<tr><td class="px-4 py-6 text-center text-gray-400">กรุณาวางข้อมูลในช่องที่เลือกเพื่อจำลองพรีวิวข้อมูล</td></tr>`;
+
+            // จัดการเปิด-ปิดส่วนแสดงผลลัพธ์และ Inputs
+            if (method === 'single') {
+                // เปิดใช้กล่องรวม / ล็อกกล่องแยก
+                singleContainer.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
+                multiContainer.classList.add('hidden', 'opacity-50', 'pointer-events-none');
+                
+                excelPasteArea.disabled = false;
+                disableMultiTextareas(true);
+            } else {
+                // เปิดใช้กล่องแยก / ล็อกกล่องรวม
+                singleContainer.classList.add('hidden', 'opacity-50', 'pointer-events-none');
+                multiContainer.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
+                
+                excelPasteArea.disabled = true;
+                disableMultiTextareas(false);
+                clearMultiTextareas();
+            }
+        }
+
+        function disableMultiTextareas(shouldDisable) {
+            const textareas = document.querySelectorAll('#columnPasteGrid textarea');
+            textareas.forEach(ta => {
+                ta.disabled = shouldDisable;
+            });
+        }
+
+        function clearMultiTextareas() {
+            const textareas = document.querySelectorAll('#columnPasteGrid textarea');
+            textareas.forEach(ta => {
+                ta.value = "";
+            });
+        }
+
+        // ประมวลผลเมื่อผู้ใช้ป้อนข้อมูลวิธีที่ 1 (Single Paste - วางรวมทีเดียว)
+        function handleExcelPasteInput() {
+            if (activePasteMethod !== 'single') return;
+
+            const rawText = document.getElementById('excelPasteArea').value;
+            const scriptType = currentActiveScriptType;
+            
+            const pasteValidationAlert = document.getElementById('pasteValidationAlert');
+            const pasteSubmitBtn = document.getElementById('pasteSubmitBtn');
+            const pastePreviewTableBody = document.getElementById('pastePreviewTableBody');
+            const pasteCounterBadge = document.getElementById('pasteCounterBadge');
+
+            if (!rawText.trim()) {
+                parsedPastedRows = [];
+                pasteValidationAlert.classList.add('hidden');
+                pasteSubmitBtn.disabled = true;
+                pasteCounterBadge.textContent = "ยังไม่มีข้อมูล";
+                pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800";
+                pastePreviewTableBody.innerHTML = `<tr><td class="px-4 py-6 text-center text-gray-400">กรุณาวางข้อมูลในกล่องรวมเพื่อจำลองพรีวิวตารางคัดกรองข้อมูล</td></tr>`;
+                return;
+            }
+
+            const lines = rawText.trim().split(/\r?\n/);
+            const rawRows = lines.map(line => line.split('\t').map(cell => cell.trim()));
+            
+            if (rawRows.length === 0) return;
+
+            let hasHeaders = false;
+            const firstRowCells = rawRows[0].map(c => c.toLowerCase());
+            
+            if (scriptType.startsWith('fb09')) {
+                if (firstRowCells.some(c => c.includes('document') || c.includes('fiscal') || c.includes('line') || c.includes('text'))) {
+                    hasHeaders = true;
+                }
+            } else if (scriptType === 'f30') {
+                if (firstRowCells.some(c => c.includes('date') || c.includes('customer') || c.includes('text'))) {
+                    hasHeaders = true;
+                }
+            }
+
+            const dataRows = hasHeaders ? rawRows.slice(1) : rawRows;
+            const headers = hasHeaders ? rawRows[0] : [];
+
+            parsedPastedRows = [];
+
+            dataRows.forEach(row => {
+                if (row.length === 1 && row[0] === "") return;
+
+                if (scriptType.startsWith('fb09')) {
+                    let docNum = "", fiscal = "", line = "", textVal = "";
+                    if (hasHeaders) {
+                        const idxDoc = headers.findIndex(h => h.toLowerCase().includes('document'));
+                        const idxFisc = headers.findIndex(h => h.toLowerCase().includes('fiscal'));
+                        const idxLine = headers.findIndex(h => h.toLowerCase().includes('line'));
+                        const idxTxt = headers.findIndex(h => h.toLowerCase().includes('text'));
+
+                        docNum = idxDoc !== -1 ? (row[idxDoc] || "") : "";
+                        fiscal = idxFisc !== -1 ? (row[idxFisc] || "") : "";
+                        line = idxLine !== -1 ? (row[idxLine] || "") : "";
+                        textVal = idxTxt !== -1 ? (row[idxTxt] || "") : "";
+                    } else {
+                        docNum = row[0] || "";
+                        fiscal = row[1] || "";
+                        line = row[2] || "";
+                        textVal = row[3] || "";
+                    }
+
+                    if (docNum || fiscal || line || textVal) {
+                        parsedPastedRows.push({
+                            "document number": docNum,
+                            "fiscal year": fiscal,
+                            "line item": line,
+                            "text": textVal
+                        });
+                    }
+                } else if (scriptType === 'f30') {
+                    let dateVal = "", customerVal = "", textVal = "";
+                    if (hasHeaders) {
+                        const idxDate = headers.findIndex(h => h.toLowerCase().includes('date'));
+                        const idxCust = headers.findIndex(h => h.toLowerCase().includes('customer'));
+                        const idxTxt = headers.findIndex(h => h.toLowerCase().includes('text'));
+
+                        dateVal = idxDate !== -1 ? (row[idxDate] || "") : "";
+                        customerVal = idxCust !== -1 ? (row[idxCust] || "") : "";
+                        textVal = idxTxt !== -1 ? (row[idxTxt] || "") : "";
+                    } else {
+                        dateVal = row[0] || "";
+                        customerVal = row[1] || "";
+                        textVal = row[2] || "";
+                    }
+
+                    if (dateVal || customerVal || textVal) {
+                        parsedPastedRows.push({
+                            "date": dateVal,
+                            "customer": customerVal,
+                            "text": textVal
+                        });
+                    }
+                }
+            });
+
+            validateAndPreviewPastedData();
+        }
+
+        // ประมวลผลเมื่อผู้ใช้ป้อนข้อมูลวิธีที่ 2 (Multi Paste - วางแยกคอลัมน์)
+        function handleColumnPasteInput() {
+            if (activePasteMethod !== 'multi') return;
+
+            const scriptType = currentActiveScriptType;
+            
+            const pasteValidationAlert = document.getElementById('pasteValidationAlert');
+            const pasteSubmitBtn = document.getElementById('pasteSubmitBtn');
+            const pastePreviewTableBody = document.getElementById('pastePreviewTableBody');
+            const pasteCounterBadge = document.getElementById('pasteCounterBadge');
+
+            parsedPastedRows = [];
+
+            if (scriptType.startsWith('fb09')) {
+                const docText = document.getElementById('col_fb09_doc').value;
+                const yearText = document.getElementById('col_fb09_year').value;
+                const lineText = document.getElementById('col_fb09_line').value;
+                const valText = document.getElementById('col_fb09_text').value;
+
+                if (!docText.trim() && !yearText.trim() && !lineText.trim() && !valText.trim()) {
+                    pasteValidationAlert.classList.add('hidden');
+                    pasteSubmitBtn.disabled = true;
+                    pasteCounterBadge.textContent = "ยังไม่มีข้อมูล";
+                    pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800";
+                    pastePreviewTableBody.innerHTML = `<tr><td class="px-4 py-6 text-center text-gray-400">กรุณาวางข้อมูลในกล่องแยกคอลัมน์ด้านบน เพื่อจำลองพรีวิวตารางข้อมูล</td></tr>`;
+                    return;
+                }
+
+                const docLines = docText.split(/\r?\n/);
+                const yearLines = yearText.split(/\r?\n/);
+                const lineLines = lineText.split(/\r?\n/);
+                const valLines = valText.split(/\r?\n/);
+
+                const maxRows = Math.max(docLines.length, yearLines.length, lineLines.length, valLines.length);
+
+                for (let i = 0; i < maxRows; i++) {
+                    const docVal = (docLines[i] || "").trim();
+                    const yearVal = (yearLines[i] || "").trim();
+                    const lineVal = (lineLines[i] || "").trim();
+                    const textVal = (valLines[i] || "").trim();
+
+                    if (docVal || yearVal || lineVal || textVal) {
+                        parsedPastedRows.push({
+                            "document number": docVal,
+                            "fiscal year": yearVal,
+                            "line item": lineVal,
+                            "text": textVal
+                        });
+                    }
+                }
+
+            } else if (scriptType === 'f30') {
+                const dateText = document.getElementById('col_f30_date').value;
+                const custText = document.getElementById('col_f30_cust').value;
+                const valText = document.getElementById('col_f30_text').value;
+
+                if (!dateText.trim() && !custText.trim() && !valText.trim()) {
+                    pasteValidationAlert.classList.add('hidden');
+                    pasteSubmitBtn.disabled = true;
+                    pasteCounterBadge.textContent = "ยังไม่มีข้อมูล";
+                    pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-800";
+                    pastePreviewTableBody.innerHTML = `<tr><td class="px-4 py-6 text-center text-gray-400">กรุณาวางข้อมูลในกล่องแยกคอลัมน์ด้านบน เพื่อจำลองพรีวิวตารางข้อมูล</td></tr>`;
+                    return;
+                }
+
+                const dateLines = dateText.split(/\r?\n/);
+                const custLines = custText.split(/\r?\n/);
+                const valLines = valText.split(/\r?\n/);
+
+                const maxRows = Math.max(dateLines.length, custLines.length, valLines.length);
+
+                for (let i = 0; i < maxRows; i++) {
+                    const dateVal = (dateLines[i] || "").trim();
+                    const custVal = (custLines[i] || "").trim();
+                    const textVal = (valLines[i] || "").trim();
+
+                    if (dateVal || custVal || textVal) {
+                        parsedPastedRows.push({
+                            "date": dateVal,
+                            "customer": custVal,
+                            "text": textVal
+                        });
+                    }
+                }
+            }
+
+            validateAndPreviewPastedData();
+        }
+
+        // ฟังก์ชันร่วมตรวจสอบความถูกต้องและพรีวิวข้อมูลตาราง (ทั้ง Single และ Multi)
+        function validateAndPreviewPastedData() {
+            const scriptType = currentActiveScriptType;
+            const pasteValidationAlert = document.getElementById('pasteValidationAlert');
+            const pasteSubmitBtn = document.getElementById('pasteSubmitBtn');
+            const pastePreviewTableBody = document.getElementById('pastePreviewTableBody');
+            const pasteCounterBadge = document.getElementById('pasteCounterBadge');
+
+            const rowsCount = parsedPastedRows.length;
+            pasteCounterBadge.textContent = `${rowsCount} แถว`;
+
+            // ดักจับลิมิตข้อมูล
+            let isExceeded = false;
+            let limitNum = 0;
+            if (scriptType.startsWith('fb09')) {
+                limitNum = 26000;
+                if (rowsCount > limitNum) isExceeded = true;
+            } else if (scriptType === 'f30') {
+                limitNum = 2000;
+                if (rowsCount > limitNum) isExceeded = true;
+            }
+
+            if (isExceeded) {
+                pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800";
+                pasteValidationAlert.className = "p-4 rounded-lg font-medium text-sm bg-red-100 text-red-700 border border-red-200 block";
+                pasteValidationAlert.innerHTML = `⚠️ <b>ข้อมูลมากกว่าที่กำหนด!</b> ตรวจพบข้อมูลคัดกรอง <b>${rowsCount.toLocaleString()} แถว</b> ซึ่งเกินขีดจำกัดสูงสุดที่เราแนะนำ (${limitNum.toLocaleString()} แถวสำหรับการวางข้อมูล)<br><span class="text-xs font-normal text-red-600 block mt-1">แนะนำให้ใช้วิธีอัปโหลดไฟล์ผ่านแบบปุ่ม CSV แทนเพื่อประสิทธิภาพที่ดีที่สุด</span>`;
+                pasteSubmitBtn.disabled = true;
+            } else {
+                pasteCounterBadge.className = "px-2.5 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800";
+                pasteValidationAlert.className = "p-4 rounded-lg font-medium text-sm bg-green-50 text-green-700 border border-green-200 block";
+                pasteValidationAlert.innerHTML = `✅ ข้อมูลถูกต้องผ่านเกณฑ์ ระบบพร้อมจัดสร้าง Script ด่วน (พบทั้งหมด ${rowsCount.toLocaleString()} แถว)`;
+                pasteSubmitBtn.disabled = rowsCount === 0;
+            }
+
+            // แสดงตารางพรีวิวจำลอง (สูงสุด 10 รายการแรก)
+            let previewRowsHTML = "";
+            const previewSubset = parsedPastedRows.slice(0, 10);
+            
+            if (previewSubset.length === 0) {
+                previewRowsHTML = `<tr><td class="px-4 py-6 text-center text-gray-400">โครงสร้างข้อมูลไม่สมบูรณ์หรือไม่พบแถวข้อมูล</td></tr>`;
+            } else {
+                previewSubset.forEach((pRow, index) => {
+                    const rowBg = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                    previewRowsHTML += `<tr class="${rowBg} border-b hover:bg-gray-100">`;
+                    if (scriptType.startsWith('fb09')) {
+                        previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["document number"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["fiscal year"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["line item"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-blue-600 font-medium">${escapeHTML(pRow["text"])}</td>`;
+                    } else if (scriptType === 'f30') {
+                        previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["date"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["customer"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-blue-600 font-medium">${escapeHTML(pRow["text"])}</td>`;
+                    }
+                    previewRowsHTML += `</tr>`;
+                });
+
+                if (rowsCount > 10) {
+                    previewRowsHTML += `<tr><td colspan="4" class="px-4 py-2 text-center text-gray-400 bg-gray-50 italic">และรายการข้อมูลที่เหลืออีก ${(rowsCount - 10).toLocaleString()} แถว...</td></tr>`;
+                }
+            }
+
+            pastePreviewTableBody.innerHTML = previewRowsHTML;
+        }
+
+        // ยืนยันการแปรผลข้อมูลและสร้างไฟล์ ZIP
+        async function submitPastedDataScript() {
+            const scriptType = currentActiveScriptType;
+            if (parsedPastedRows.length === 0) return;
+
+            closePasteModal();
+
+            if (scriptType.startsWith('fb09')) {
+                const subType = scriptType === 'fb09_assignment' ? 'assignment' : 'text';
+                showMessage(`กำลังประมวลผลข้อมูลจากที่วางและเตรียม ZIP สำหรับ FB09 ${subType}...`, "info");
+                setTimeout(() => {
+                    buildFB09ScriptZip(parsedPastedRows, subType, true);
+                }, 100);
+            } else if (scriptType === 'f30') {
+                showMessage(`กำลังประมวลผลข้อมูลจากที่วางและเตรียม ZIP สำหรับ F_30...`, "info");
+                setTimeout(() => {
+                    buildF30ScriptZip(parsedPastedRows, true);
+                }, 100);
+            }
+        }
+
+        // =========================================================
+        // 3. ฟังก์ชันจัดทำข้อมูลสคริปต์หลัก (FB09 & F_30)
+        // =========================================================
+
+        // ฟังก์ชันย่อยสำหรับสร้างและบีบอัดไฟล์ ZIP FB09 (ใช้ร่วมกันทั้ง Upload และ Paste)
+        async function buildFB09ScriptZip(data, type, isPastedSource = false) {
+            try {
+                const todayDate = new Date();
+                const dd = String(todayDate.getDate()).padStart(2, '0');
+                const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                const fileDateStr = `${dd}.${mm}`;
+
+                const zip = new JSZip();
+                const limit = 26000;
+                const totalChunks = Math.ceil(data.length / limit);
+
+                for (let i = 0; i < totalChunks; i++) {
+                    showMessage(`กำลังสร้างส่วนไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
+                    await new Promise(r => setTimeout(r, 10));
+
+                    const chunk = data.slice(i * limit, (i + 1) * limit);
+                    let txtContentArr = [];
+
+                    chunk.forEach(row => {
+                        const getVal = (key) => {
+                            const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
+                            return foundKey ? (row[foundKey] || "").trim() : "";
+                        };
+
+                        const docNum = getVal("document number");
+                        const fiscYear = getVal("fiscal year");
+                        const lineItem = getVal("line item");
+                        const textVal = getVal("text");
+
+                        let str = "SAPMF05L   0102X\r\n" +
+                                  `                RF05L-BELNR                        ${docNum}\r\n` +
+                                  "                RF05L-BUKRS                        1000\r\n" +
+                                  `                RF05L-GJAHR                        ${fiscYear}\r\n` +
+                                  `                RF05L-BUZEI                        ${lineItem}\r\n` +
+                                  "                BDC_OKCODE                         /00\r\n" +
+                                  "SAPMF05L   0301X\r\n";
+
+                        if (type === 'assignment') {
+                            str += `                BSEG-ZUONR                         ${textVal}\r\n`;
+                        } else {
+                            str += `                BSEG-SGTXT                         ${textVal}\r\n`;
+                        }
+                        
+                        str += "                BDC_OKCODE                         =AE\r\n" +
+                               "TCDEFB09\r\n";
+
+                        txtContentArr.push(str);
+                    });
+
+                    txtContentArr.push("ENDTCDE\r\n");
+                    
+                    const typeLabel = type === 'assignment' ? 'Assignment' : 'Text';
+                    zip.file(`FB09_${typeLabel}_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
+                }
+
+                showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP และเริ่มต้นดาวน์โหลด...`, "info");
+                await new Promise(r => setTimeout(r, 100)); 
+
+                zip.generateAsync({type: "blob"}).then(function(content) {
+                    const url = URL.createObjectURL(content);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', isPastedSource ? `Pasted_FB09_${type}_Scripts.zip` : `Manual_FB09_${type}_Scripts.zip`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    showMessage(`สร้างและดาวน์โหลดไฟล์ ZIP สำหรับ FB09 ${type} สำเร็จแล้ว!`, "success");
+                });
+
+            } catch (error) {
+                showMessage("เกิดข้อผิดพลาดในการประมวลผลไฟล์ ZIP: " + error.message, "error");
+            }
+        }
+
+        // ฟังก์ชันย่อยสำหรับสร้างและบีบอัดไฟล์ ZIP F_30 (ใช้ร่วมกันทั้ง Upload และ Paste)
+        async function buildF30ScriptZip(data, isPastedSource = false) {
+            try {
+                const todayDate = new Date();
+                const dd = String(todayDate.getDate()).padStart(2, '0');
+                const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                const fileDateStr = `${dd}.${mm}`;
+
+                const zip = new JSZip();
+                const limit = 2000;
+                const totalChunks = Math.ceil(data.length / limit);
+
+                let rawTemplate = defaultF30Text_ForTextMode.replace(/\r?\n/g, '\r\n');
+
+                for (let i = 0; i < totalChunks; i++) {
+                    showMessage(`กำลังสร้างส่วนไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
+                    await new Promise(r => setTimeout(r, 10));
+
+                    const chunk = data.slice(i * limit, (i + 1) * limit);
+                    let txtContentArr = [];
+
+                    chunk.forEach(row => {
+                        const getVal = (key) => {
+                            const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
+                            return foundKey ? (row[foundKey] || "").trim() : "";
+                        };
+
+                        const dateVal = getVal("date");
+                        const custVal = getVal("customer");
+                        const textVal = getVal("text");
+
+                        let processedTemplate = rawTemplate
+                            .split('(today,"dd.mm.yyyy")').join(dateVal)
+                            .split('(Customer)').join(custVal)
+                            .split('(Text=0O/I(U))').join(textVal);
+
+                        if (!processedTemplate.endsWith('\r\n')) {
+                            processedTemplate += '\r\n';
+                        }
+                        
+                        txtContentArr.push(processedTemplate);
+                    });
+
+                    zip.file(`F_30_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
+                }
+
+                showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP และเริ่มต้นดาวน์โหลด...`, "info");
+                await new Promise(r => setTimeout(r, 100));
+
+                zip.generateAsync({type: "blob"}).then(function(content) {
+                    const url = URL.createObjectURL(content);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', isPastedSource ? `Pasted_F30_Scripts.zip` : `Manual_F30_Scripts.zip`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    showMessage("สร้างและดาวน์โหลดไฟล์ ZIP F_30 สำเร็จแล้ว!", "success");
+                });
+
+            } catch (error) {
+                showMessage("เกิดข้อผิดพลาดในการสร้าง ZIP: " + error.message, "error");
+            }
+        }
+
+        // --- โหมดไฟล์อัปโหลด FB09 M ดั้งเดิม ---
         async function handleManualFB09(inputElement, type) {
             const file = inputElement.files[0];
             if (!file) return;
@@ -466,7 +1231,7 @@ ENDTCDE`;
                 complete: async function(results) {
                     const data = results.data;
                     if (data.length === 0) {
-                        alert("ไฟล์ไม่มีข้อมูล");
+                        showMessage("ไฟล์ไม่มีข้อมูลในสารบบ", "error");
                         inputElement.value = '';
                         return;
                     }
@@ -478,98 +1243,26 @@ ENDTCDE`;
                     const hasText = firstRowKeys.includes("text");
 
                     if (!hasDocNum || !hasFiscYear || !hasLineItem || !hasText) {
-                        alert("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Line item, Text");
+                        showMessage("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Line item, Text", "error");
                         inputElement.value = '';
                         return;
                     }
 
                     showMessage(`กำลังเตรียมบีบอัดไฟล์ ZIP สำหรับ FB09 ${type} M...`, "info");
-                    
-                    setTimeout(async () => {
-                        try {
-                            const todayDate = new Date();
-                            const dd = String(todayDate.getDate()).padStart(2, '0');
-                            const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
-                            const fileDateStr = `${dd}.${mm}`;
-
-                            const zip = new JSZip();
-                            const limit = 26000;
-                            const totalChunks = Math.ceil(data.length / limit);
-
-                            for (let i = 0; i < totalChunks; i++) {
-                                showMessage(`กำลังสร้างไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
-                                await new Promise(r => setTimeout(r, 10));
-
-                                const chunk = data.slice(i * limit, (i + 1) * limit);
-                                let txtContentArr = [];
-
-                                chunk.forEach(row => {
-                                    const getVal = (key) => {
-                                        const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
-                                        return foundKey ? (row[foundKey] || "").trim() : "";
-                                    };
-
-                                    const docNum = getVal("document number");
-                                    const fiscYear = getVal("fiscal year");
-                                    const lineItem = getVal("line item");
-                                    const textVal = getVal("text");
-
-                                    let str = "SAPMF05L   0102X\r\n" +
-                                              `                RF05L-BELNR                        ${docNum}\r\n` +
-                                              "                RF05L-BUKRS                        1000\r\n" +
-                                              `                RF05L-GJAHR                        ${fiscYear}\r\n` +
-                                              `                RF05L-BUZEI                        ${lineItem}\r\n` +
-                                              "                BDC_OKCODE                         /00\r\n" +
-                                              "SAPMF05L   0301X\r\n";
-
-                                    if (type === 'assignment') {
-                                        str += `                BSEG-ZUONR                         ${textVal}\r\n`;
-                                    } else {
-                                        str += `                BSEG-SGTXT                         ${textVal}\r\n`;
-                                    }
-                                    
-                                    str += "                BDC_OKCODE                         =AE\r\n" +
-                                           "TCDEFB09\r\n";
-
-                                    txtContentArr.push(str);
-                                });
-
-                                txtContentArr.push("ENDTCDE\r\n");
-                                
-                                const typeLabel = type === 'assignment' ? 'Assignment' : 'Text';
-                                zip.file(`FB09_${typeLabel}_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
-                            }
-
-                            showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP (ใกล้เสร็จแล้ว)...`, "info");
-                            await new Promise(r => setTimeout(r, 100)); 
-
-                            zip.generateAsync({type: "blob"}).then(function(content) {
-                                const url = URL.createObjectURL(content);
-                                const link = document.createElement('a');
-                                link.setAttribute('href', url);
-                                link.setAttribute('download', `Manual_FB09_${type}_Scripts.zip`);
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                URL.revokeObjectURL(url);
-                                showMessage(`สร้างไฟล์ ZIP FB09 ${type} สำเร็จแล้ว!`, "success");
-                            });
-
-                        } catch (error) {
-                            showMessage("เกิดข้อผิดพลาดในการสร้าง ZIP: " + error.message, "error");
-                        }
+                    setTimeout(() => {
+                        buildFB09ScriptZip(data, type, false);
                     }, 50);
 
                     inputElement.value = '';
                 },
                 error: function(err) {
-                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message);
+                    showMessage("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message, "error");
                     inputElement.value = '';
                 }
             });
         }
 
-        // --- โหมดสร้าง F_30 M (ปุ่มเดียว) ---
+        // --- โหมดไฟล์อัปโหลด F_30 M ดั้งเดิม ---
         async function handleManualF30(inputElement) {
             const file = inputElement.files[0];
             if (!file) return;
@@ -580,7 +1273,7 @@ ENDTCDE`;
                 complete: async function(results) {
                     const data = results.data;
                     if (data.length === 0) {
-                        alert("ไฟล์ไม่มีข้อมูล");
+                        showMessage("ไฟล์ไม่มีข้อมูลให้ใช้งาน", "error");
                         inputElement.value = '';
                         return;
                     }
@@ -591,83 +1284,20 @@ ENDTCDE`;
                     const hasText = firstRowKeys.includes("text");
 
                     if (!hasDate || !hasCustomer || !hasText) {
-                        alert("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Date, customer, text");
+                        showMessage("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Date, customer, text", "error");
                         inputElement.value = '';
                         return;
                     }
 
                     showMessage(`กำลังเตรียมบีบอัดไฟล์ ZIP สำหรับ F_30 M...`, "info");
-
-                    setTimeout(async () => {
-                        try {
-                            const todayDate = new Date();
-                            const dd = String(todayDate.getDate()).padStart(2, '0');
-                            const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
-                            const fileDateStr = `${dd}.${mm}`;
-
-                            const zip = new JSZip();
-                            const limit = 2000;
-                            const totalChunks = Math.ceil(data.length / limit);
-
-                            // ดึงค่าจาก defaultF30Text_ForTextMode โดยตรง
-                            let rawTemplate = defaultF30Text_ForTextMode.replace(/\r?\n/g, '\r\n');
-
-                            for (let i = 0; i < totalChunks; i++) {
-                                showMessage(`กำลังสร้างไฟล์ที่ ${i + 1}/${totalChunks}...`, "info");
-                                await new Promise(r => setTimeout(r, 10));
-
-                                const chunk = data.slice(i * limit, (i + 1) * limit);
-                                let txtContentArr = [];
-
-                                chunk.forEach(row => {
-                                    const getVal = (key) => {
-                                        const foundKey = Object.keys(row).find(k => k.trim().toLowerCase() === key);
-                                        return foundKey ? (row[foundKey] || "").trim() : "";
-                                    };
-
-                                    const dateVal = getVal("date");
-                                    const custVal = getVal("customer");
-                                    const textVal = getVal("text");
-
-                                    let processedTemplate = rawTemplate
-                                        .split('(today,"dd.mm.yyyy")').join(dateVal)
-                                        .split('(Customer)').join(custVal)
-                                        .split('(Text=0O/I(U))').join(textVal);
-
-                                    if (!processedTemplate.endsWith('\r\n')) {
-                                        processedTemplate += '\r\n';
-                                    }
-                                    
-                                    txtContentArr.push(processedTemplate);
-                                });
-
-                                zip.file(`F_30_M_${fileDateStr}_${i + 1}.txt`, txtContentArr.join(""));
-                            }
-
-                            showMessage(`กำลังบีบอัดเป็นไฟล์ ZIP (ใกล้เสร็จแล้ว)...`, "info");
-                            await new Promise(r => setTimeout(r, 100));
-
-                            zip.generateAsync({type: "blob"}).then(function(content) {
-                                const url = URL.createObjectURL(content);
-                                const link = document.createElement('a');
-                                link.setAttribute('href', url);
-                                link.setAttribute('download', `Manual_F30_Scripts.zip`);
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                URL.revokeObjectURL(url);
-                                showMessage("สร้างไฟล์ ZIP F_30 สำเร็จแล้ว!", "success");
-                            });
-
-                        } catch (error) {
-                            showMessage("เกิดข้อผิดพลาดในการสร้าง ZIP: " + error.message, "error");
-                        }
+                    setTimeout(() => {
+                        buildF30ScriptZip(data, false);
                     }, 50);
 
                     inputElement.value = '';
                 },
                 error: function(err) {
-                    alert("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message);
+                    showMessage("เกิดข้อผิดพลาดในการอ่านไฟล์: " + err.message, "error");
                     inputElement.value = '';
                 }
             });
@@ -709,7 +1339,6 @@ ENDTCDE`;
 
         // --- ระบบคัดกรองหลัก ---
         function processFile(file) {
-            
             const selectedLogicRadio = document.querySelector('input[name="mainLogicSelection"]:checked');
             currentUsedLogic = selectedLogicRadio ? selectedLogicRadio.value : "text";
 
@@ -968,7 +1597,7 @@ ENDTCDE`;
             });
 
             if (dataToExport.length === 0) {
-                alert('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด');
+                showMessage('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด', 'error');
                 return;
             }
 
@@ -999,12 +1628,10 @@ ENDTCDE`;
                         chunk.forEach(row => {
                             let fb09FinalText = "";
                             
-                            // --- 📌 จุดที่แก้ไขตามที่ผู้ใช้แจ้ง (Logic OPD=0) ---
+                            // OPD=0 logic check
                             if (currentUsedLogic === "date") {
-                                // โหมด Date: เปลี่ยนค่าเป็นคำว่า OPD=0 เลย ไม่เอา Text จากไฟล์มาต่อ
                                 fb09FinalText = "OPD=0";
                             } else {
-                                // โหมด Text: ใช้ Text จากไฟล์มาต่อด้วย Suffix (O, I, U)
                                 let suffix = "=0";
                                 const ref1 = (row["Reference Key 1"] || "").toUpperCase();
                                 const ref2 = (row["Reference Key 2"] || "").toUpperCase();
@@ -1020,7 +1647,6 @@ ENDTCDE`;
                                 }
                                 fb09FinalText = row["Text"] + suffix;
                             }
-                            // ----------------------------------------------------
 
                             let withSuffixStr = "SAPMF05L   0102X\r\n" +
                                 `                RF05L-BELNR                        ${row["Document Number"]}\r\n` +
@@ -1067,7 +1693,6 @@ ENDTCDE`;
                     const f30Limit = 2000;
                     const totalF30Chunks = Math.ceil(f30UniqueList.length / f30Limit);
 
-                    // ตรวจสอบและดึง Template อย่างปลอดภัยจากตัวแปร Hardcode โดยตรง
                     let rawTemplate = currentUsedLogic === "date" 
                         ? defaultF30Text_ForDateMode.replace(/\r?\n/g, '\r\n')
                         : defaultF30Text_ForTextMode.replace(/\r?\n/g, '\r\n');
@@ -1141,7 +1766,7 @@ ENDTCDE`;
             });
 
             if (dataToExport.length === 0) {
-                alert('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด');
+                showMessage('ไม่มีข้อมูลที่ตรงกับการค้นหาสำหรับดาวน์โหลด', 'error');
                 return;
             }
 
