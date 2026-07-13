@@ -866,7 +866,7 @@ ENDTCDE`;
                         parsedPastedRows.push({
                             "document number": docNum,
                             "fiscal year": fiscal,
-                            "Item": line,
+                            "item": line,
                             "text": textVal
                         });
                     }
@@ -944,7 +944,7 @@ ENDTCDE`;
                         parsedPastedRows.push({
                             "document number": docVal,
                             "fiscal year": yearVal,
-                            "Item": lineVal,
+                            "item": lineVal,
                             "text": textVal
                         });
                     }
@@ -1035,7 +1035,7 @@ ENDTCDE`;
                     if (scriptType.startsWith('fb09')) {
                         previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["document number"])}</td>`;
                         previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["fiscal year"])}</td>`;
-                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["Item"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["item"])}</td>`;
                         previewRowsHTML += `<td class="px-4 py-2 border-r text-blue-600 font-medium">${escapeHTML(pRow["text"])}</td>`;
                     } else if (scriptType === 'f30') {
                         previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["date"])}</td>`;
@@ -1105,14 +1105,14 @@ ENDTCDE`;
 
                         const docNum = getVal("document number");
                         const fiscYear = getVal("fiscal year");
-                        const Item = getVal("Item");
+                        const lineItem = getVal("item");
                         const textVal = getVal("text");
 
                         let str = "SAPMF05L   0102X\r\n" +
                                   `                RF05L-BELNR                        ${docNum}\r\n` +
                                   "                RF05L-BUKRS                        1000\r\n" +
                                   `                RF05L-GJAHR                        ${fiscYear}\r\n` +
-                                  `                RF05L-BUZEI                        ${Item}\r\n` +
+                                  `                RF05L-BUZEI                        ${lineItem}\r\n` +
                                   "                BDC_OKCODE                         /00\r\n" +
                                   "SAPMF05L   0301X\r\n";
 
@@ -1239,10 +1239,10 @@ ENDTCDE`;
                     const firstRowKeys = Object.keys(data[0]).map(k => k.trim().toLowerCase());
                     const hasDocNum = firstRowKeys.includes("document number");
                     const hasFiscYear = firstRowKeys.includes("fiscal year");
-                    const hasItem = firstRowKeys.includes("Item");
+                    const hasLineItem = firstRowKeys.includes("item");
                     const hasText = firstRowKeys.includes("text");
 
-                    if (!hasDocNum || !hasFiscYear || !hasItem || !hasText) {
+                    if (!hasDocNum || !hasFiscYear || !hasLineItem || !hasText) {
                         showMessage("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Item, Text", "error");
                         inputElement.value = '';
                         return;
@@ -1369,11 +1369,11 @@ ENDTCDE`;
                         
                         const idxDocNum = headerRow.findIndex(h => h.trim().toLowerCase() === "document number");
                         const idxFiscalYear = headerRow.findIndex(h => h.trim().toLowerCase() === "fiscal year");
-                        const idxItem = headerRow.findIndex(h => h.trim().toLowerCase() === "Item");
+                        const idxLineItem = headerRow.findIndex(h => h.trim().toLowerCase() === "item");
                         
                         const idxDocDate = headerRow.findIndex(h => h.trim().toLowerCase() === "document date");
 
-                        if (idxCustomer === -1 || idxRefKey1 === -1 || idxRefKey2 === -1 || idxText === -1 || idxValue === -1 || idxReference === -1 || idxDocNum === -1 || idxFiscalYear === -1 || idxItem === -1) {
+                        if (idxCustomer === -1 || idxRefKey1 === -1 || idxRefKey2 === -1 || idxText === -1 || idxValue === -1 || idxReference === -1 || idxDocNum === -1 || idxFiscalYear === -1 || idxLineItem === -1) {
                             showMessage("ไม่พบคอลัมน์ที่ต้องการทั้งหมด โปรดตรวจสอบหัวคอลัมน์ในไฟล์ให้ครบ", "error");
                             return;
                         }
@@ -1432,7 +1432,7 @@ ENDTCDE`;
                                     refKey1: refKey1Val,
                                     docNum: (row[idxDocNum] || "").trim(),
                                     fiscalYear: (row[idxFiscalYear] || "").trim(),
-                                    Item: (row[idxItem] || "").trim()
+                                    lineItem: (row[idxLineItem] || "").trim()
                                 });
                             }
 
@@ -1466,7 +1466,7 @@ ENDTCDE`;
                                                 "Combined Key": key,
                                                 "Document Number": r.docNum,
                                                 "Fiscal Year": r.fiscalYear,
-                                                "Item": r.Item
+                                                "Item": r.lineItem
                                             });
                                         });
                                     }
