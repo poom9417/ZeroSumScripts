@@ -59,7 +59,7 @@
                             <ul class="list-disc pl-4 mt-1 text-gray-300">
                                 <li>Document Number</li>
                                 <li>Fiscal Year</li>
-                                <li>Line item</li>
+                                <li>Item</li>
                                 <li>Text <span class="text-gray-500">(ลงช่อง ZUONR)</span></li>
                             </ul>
                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
@@ -78,7 +78,7 @@
                             <ul class="list-disc pl-4 mt-1 text-gray-300">
                                 <li>Document Number</li>
                                 <li>Fiscal Year</li>
-                                <li>Line item</li>
+                                <li>Item</li>
                                 <li>Text <span class="text-gray-500">(ลงช่อง SGTXT)</span></li>
                             </ul>
                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
@@ -541,7 +541,7 @@ ENDTCDE`;
         function downloadSampleFiles() {
             const zip = new JSZip();
 
-            const fb09Csv = "Document Number,Fiscal Year,Line item,Text\n6100000000,2026,1,SampleText\n6100000001,2026,2,SampleText2";
+            const fb09Csv = "Document Number,Fiscal Year,Item,Text\n6100000000,2026,1,SampleText\n6100000001,2026,2,SampleText2";
             zip.file("ตัวอย่าง_FB09.csv", "\uFEFF" + fb09Csv);
 
             const f30Csv = "Date,customer,text\n31.12.2026,C0123456,SampleText=0O\n01.01.2027,C0123457,SampleText2=0I";
@@ -558,7 +558,7 @@ ENDTCDE`;
 ต้องมีหัวคอลัมน์ 4 คอลัมน์ ดังนี้:
   > Document Number : เลขที่เอกสาร (เช่น 6100000000)
   > Fiscal Year     : ปี (เช่น 2026)
-  > Line item       : บรรทัดรายการ (เช่น 1, 2, 3...)
+  > Item       : บรรทัดรายการ (เช่น 1, 2, 3...)
   > Text            : ข้อความที่ต้องการใส่ 
 
 ------------------------------------------------------
@@ -655,7 +655,7 @@ ENDTCDE`;
                 requirementsHTML = `
                     <p class="font-bold">📋 โครงสร้างข้อมูลที่ระบบต้องการ:</p>
                     <p class="text-xs text-indigo-950 mt-1">
-                        <b>หากเลือกวิธีที่ 1 (วางรวมทีเดียว):</b> คัดลอกตารางจาก Excel รวมถึงบรรทัดหัวคอลัมน์ (Document Number, Fiscal Year, Line item, Text)<br>
+                        <b>หากเลือกวิธีที่ 1 (วางรวมทีเดียว):</b> คัดลอกตารางจาก Excel รวมถึงบรรทัดหัวคอลัมน์ (Document Number, Fiscal Year, Item, Text)<br>
                         <b>หากเลือกวิธีที่ 2 (วางแยกคอลัมน์):</b> คัดลอกข้อมูลเฉพาะแนวตั้งทีละคอลัมน์จาก Excel มาวางลงแต่ละกล่อง
                     </p>
                     <p class="mt-2 text-xs text-red-700 font-semibold">⚠️ ขีดจำกัดความจุ: ข้อมูลห้ามเกิน 26,000 แถว หากเกินระบบจะแจ้งให้ใช้วิธีอัปโหลดไฟล์ CSV แทน</p>
@@ -664,7 +664,7 @@ ENDTCDE`;
                 tableHeadHTML = `
                     <th scope="col" class="px-4 py-2 border-r font-bold">Document Number</th>
                     <th scope="col" class="px-4 py-2 border-r font-bold">Fiscal Year</th>
-                    <th scope="col" class="px-4 py-2 border-r font-bold">Line item</th>
+                    <th scope="col" class="px-4 py-2 border-r font-bold">Item</th>
                     <th scope="col" class="px-4 py-2 border-r font-bold">Text</th>
                 `;
 
@@ -674,7 +674,7 @@ ENDTCDE`;
                 const columns = [
                     { id: 'col_fb09_doc', label: '1. Document Number', placeholder: 'วางเลขที่เอกสาร...' },
                     { id: 'col_fb09_year', label: '2. Fiscal Year', placeholder: 'วางปี Fiscal Year...' },
-                    { id: 'col_fb09_line', label: '3. Line Item', placeholder: 'วางบรรทัดรายการ...' },
+                    { id: 'col_fb09_line', label: '3. Item', placeholder: 'วางบรรทัดรายการ...' },
                     { id: 'col_fb09_text', label: `4. Text (${subType === 'Assignment' ? 'ZUONR' : 'SGTXT'})`, placeholder: 'วางข้อความ Text...' }
                 ];
 
@@ -866,7 +866,7 @@ ENDTCDE`;
                         parsedPastedRows.push({
                             "document number": docNum,
                             "fiscal year": fiscal,
-                            "line item": line,
+                            "Item": line,
                             "text": textVal
                         });
                     }
@@ -944,7 +944,7 @@ ENDTCDE`;
                         parsedPastedRows.push({
                             "document number": docVal,
                             "fiscal year": yearVal,
-                            "line item": lineVal,
+                            "Item": lineVal,
                             "text": textVal
                         });
                     }
@@ -1035,7 +1035,7 @@ ENDTCDE`;
                     if (scriptType.startsWith('fb09')) {
                         previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["document number"])}</td>`;
                         previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["fiscal year"])}</td>`;
-                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["line item"])}</td>`;
+                        previewRowsHTML += `<td class="px-4 py-2 border-r text-gray-600">${escapeHTML(pRow["Item"])}</td>`;
                         previewRowsHTML += `<td class="px-4 py-2 border-r text-blue-600 font-medium">${escapeHTML(pRow["text"])}</td>`;
                     } else if (scriptType === 'f30') {
                         previewRowsHTML += `<td class="px-4 py-2 border-r font-medium text-gray-800">${escapeHTML(pRow["date"])}</td>`;
@@ -1105,7 +1105,7 @@ ENDTCDE`;
 
                         const docNum = getVal("document number");
                         const fiscYear = getVal("fiscal year");
-                        const lineItem = getVal("line item");
+                        const lineItem = getVal("Item");
                         const textVal = getVal("text");
 
                         let str = "SAPMF05L   0102X\r\n" +
@@ -1239,11 +1239,11 @@ ENDTCDE`;
                     const firstRowKeys = Object.keys(data[0]).map(k => k.trim().toLowerCase());
                     const hasDocNum = firstRowKeys.includes("document number");
                     const hasFiscYear = firstRowKeys.includes("fiscal year");
-                    const hasLineItem = firstRowKeys.includes("line item");
+                    const hasLineItem = firstRowKeys.includes("Item");
                     const hasText = firstRowKeys.includes("text");
 
                     if (!hasDocNum || !hasFiscYear || !hasLineItem || !hasText) {
-                        showMessage("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Line item, Text", "error");
+                        showMessage("หัวคอลัมน์ไม่ถูกต้อง! ต้องมี Document Number, Fiscal Year, Item, Text", "error");
                         inputElement.value = '';
                         return;
                     }
@@ -1369,7 +1369,7 @@ ENDTCDE`;
                         
                         const idxDocNum = headerRow.findIndex(h => h.trim().toLowerCase() === "document number");
                         const idxFiscalYear = headerRow.findIndex(h => h.trim().toLowerCase() === "fiscal year");
-                        const idxLineItem = headerRow.findIndex(h => h.trim().toLowerCase() === "line item");
+                        const idxLineItem = headerRow.findIndex(h => h.trim().toLowerCase() === "Item");
                         
                         const idxDocDate = headerRow.findIndex(h => h.trim().toLowerCase() === "document date");
 
@@ -1466,7 +1466,7 @@ ENDTCDE`;
                                                 "Combined Key": key,
                                                 "Document Number": r.docNum,
                                                 "Fiscal Year": r.fiscalYear,
-                                                "Line item": r.lineItem
+                                                "Item": r.lineItem
                                             });
                                         });
                                     }
@@ -1652,7 +1652,7 @@ ENDTCDE`;
                                 `                RF05L-BELNR                        ${row["Document Number"]}\r\n` +
                                 "                RF05L-BUKRS                        1000\r\n" +
                                 `                RF05L-GJAHR                        ${row["Fiscal Year"]}\r\n` +
-                                `                RF05L-BUZEI                        ${row["Line item"]}\r\n` +
+                                `                RF05L-BUZEI                        ${row["Item"]}\r\n` +
                                 "                BDC_OKCODE                         /00\r\n" +
                                 "SAPMF05L   0301X\r\n" +
                                 `                BSEG-SGTXT                         ${fb09FinalText}\r\n` +
@@ -1663,7 +1663,7 @@ ENDTCDE`;
                                 `                RF05L-BELNR                        ${row["Document Number"]}\r\n` +
                                 "                RF05L-BUKRS                        1000\r\n" +
                                 `                RF05L-GJAHR                        ${row["Fiscal Year"]}\r\n` +
-                                `                RF05L-BUZEI                        ${row["Line item"]}\r\n` +
+                                `                RF05L-BUZEI                        ${row["Item"]}\r\n` +
                                 "                BDC_OKCODE                         /00\r\n" +
                                 "SAPMF05L   0301X\r\n" +
                                 `                BSEG-SGTXT                         ${row["Text"]}\r\n` +
